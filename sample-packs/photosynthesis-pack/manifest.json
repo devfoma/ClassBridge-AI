@@ -1,0 +1,14 @@
+{
+  "packId": "basic-science-jss2-photosynthesis",
+  "title": "Photosynthesis Starter Pack",
+  "subject": "Basic Science",
+  "level": "JSS2",
+  "language": "English",
+  "resources": [
+    {
+      "title": "Photosynthesis Notes",
+      "type": "text",
+      "path": "resources/photosynthesis.txt"
+    }
+  ]
+}

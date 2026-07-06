@@ -1,0 +1,39 @@
+{
+  "expo": {
+    "name": "ClassBridge AI",
+    "slug": "classbridge-ai",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "scheme": "classbridge",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": false,
+    "splash": {
+      "resizeMode": "contain",
+      "backgroundColor": "#0B2A5B"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.classbridge.ai"
+    },
+    "android": {
+      "package": "com.classbridge.ai",
+      "usesCleartextTraffic": true
+    },
+    "web": {
+      "bundler": "metro"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "ClassBridge uses the camera only to scan a class join code."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": false
+    }
+  }
+}

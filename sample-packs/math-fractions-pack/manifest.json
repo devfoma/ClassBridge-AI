@@ -1,0 +1,14 @@
+{
+  "packId": "math-jss2-fractions",
+  "title": "Comparing Fractions Starter Pack",
+  "subject": "Mathematics",
+  "level": "JSS2",
+  "language": "English",
+  "resources": [
+    {
+      "title": "Comparing Fractions Notes",
+      "type": "text",
+      "path": "resources/fractions.txt"
+    }
+  ]
+}

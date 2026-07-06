@@ -1,0 +1,28 @@
+Comparing Fractions Notes
+Subject: Mathematics
+Level: JSS2
+
+What is a Fraction?
+A fraction is a way of showing a part of a whole. It is written as two numbers with a line between them, for example 1/2 or 3/4. The number on top is called the numerator and it tells us how many parts we have. The number at the bottom is called the denominator and it tells us how many equal parts the whole is divided into.
+
+Fractions With the Same Denominator
+When two fractions have the same denominator, comparing them is easy. We simply look at the numerators. The fraction with the bigger numerator is the bigger fraction. For example, 3/5 is greater than 2/5 because 3 is greater than 2, and both wholes are divided into 5 equal parts.
+
+Fractions With Different Denominators
+When fractions have different denominators, we cannot compare them directly. First we make the denominators the same by finding a common denominator. For example, to compare 1/2 and 2/3, we can rewrite them as 3/6 and 4/6. Now that the denominators are equal, we see that 4/6 is greater than 3/6, so 2/3 is greater than 1/2.
+
+Using Cross Multiplication
+A quick way to compare two fractions is cross multiplication. To compare a/b and c/d, multiply a by d and b by c. If a times d is greater than b times c, then a/b is the bigger fraction. For example, to compare 2/3 and 3/5: 2 times 5 is 10, and 3 times 3 is 9. Since 10 is greater than 9, 2/3 is greater than 3/5.
+
+Why Comparing Fractions Matters
+Comparing fractions helps us in everyday life, such as sharing food fairly, measuring ingredients when cooking, and understanding scores and money. Learning to compare fractions builds a strong foundation for more advanced mathematics like adding and subtracting fractions.
+
+Key Terms
+- Numerator: the top number of a fraction, showing how many parts we have.
+- Denominator: the bottom number of a fraction, showing the total equal parts.
+- Common denominator: a shared denominator used to compare or add fractions.
+
+Short Activity
+1. Which is bigger: 3/4 or 5/8? Show your working.
+2. Put these fractions in order from smallest to largest: 1/2, 2/3, 1/4.
+3. Explain in one sentence why 4/6 and 2/3 are equal.
