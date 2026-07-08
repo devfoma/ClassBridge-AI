@@ -3,6 +3,12 @@ node_modules/
 .pnp
 .pnp.js
 
+# Workspace lockfiles: the root package-lock.json is the single source of
+# truth; stray per-workspace lockfiles come from running `npm install` inside
+# a workspace and should not be tracked.
+hub/package-lock.json
+mobile/package-lock.json
+
 # Build output
 dist/
 build/
