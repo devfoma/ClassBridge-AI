@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
-import QRCode from 'react-native-qrcode-svg';
+import QRCodeBase, { type QRCodeProps } from 'react-native-qrcode-svg';
 import { Screen } from '../../src/components/Screen';
 import { AppCard } from '../../src/components/AppCard';
 import { AppButton } from '../../src/components/AppButton';
@@ -10,6 +10,11 @@ import { EmptyState } from '../../src/components/EmptyState';
 import { useAuthStore } from '../../src/state/useAuthStore';
 import { api } from '../../src/services/apiClient';
 import { colors } from '../../src/theme/colors';
+
+// react-native-qrcode-svg's bundled types predate React 19's stricter JSX typing,
+// so its default export isn't recognized as a valid JSX component. Cast it back to a
+// component type while preserving the library's real prop types.
+const QRCode = QRCodeBase as unknown as React.ComponentType<QRCodeProps>;
 import { spacing } from '../../src/theme/spacing';
 
 interface Row {

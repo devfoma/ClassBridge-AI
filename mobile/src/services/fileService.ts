@@ -1,36 +1,34 @@
-import * as FileSystem from 'expo-file-system';
+import { Directory, File, Paths } from 'expo-file-system';
 
-const RESOURCE_DIR = `${FileSystem.documentDirectory}classbridge/resources/`;
+const RESOURCE_DIR = new Directory(Paths.document, 'classbridge', 'resources');
 
-async function ensureDir(): Promise<void> {
-  const info = await FileSystem.getInfoAsync(RESOURCE_DIR);
-  if (!info.exists) {
-    await FileSystem.makeDirectoryAsync(RESOURCE_DIR, { intermediates: true });
+function ensureDir(): void {
+  if (!RESOURCE_DIR.exists) {
+    RESOURCE_DIR.create({ intermediates: true, idempotent: true });
   }
 }
 
 /** Save a resource's text content to a local file so it is available offline. */
 export async function saveResourceText(resourceId: string, text: string): Promise<string> {
-  await ensureDir();
-  const path = `${RESOURCE_DIR}${resourceId}.txt`;
-  await FileSystem.writeAsStringAsync(path, text, { encoding: FileSystem.EncodingType.UTF8 });
-  return path;
+  ensureDir();
+  const file = new File(RESOURCE_DIR, `${resourceId}.txt`);
+  file.write(text);
+  return file.uri;
 }
 
 export async function readResourceText(path: string): Promise<string> {
-  return FileSystem.readAsStringAsync(path, { encoding: FileSystem.EncodingType.UTF8 });
+  return new File(path).text();
 }
 
 /** Download a binary/file resource from the hub into local storage. */
 export async function downloadResourceFile(url: string, resourceId: string, ext = ''): Promise<string> {
-  await ensureDir();
-  const path = `${RESOURCE_DIR}${resourceId}${ext}`;
-  const result = await FileSystem.downloadAsync(url, path);
-  return result.uri;
+  ensureDir();
+  const destination = new File(RESOURCE_DIR, `${resourceId}${ext}`);
+  const file = await File.downloadFileAsync(url, destination, { idempotent: true });
+  return file.uri;
 }
 
 export async function fileExists(path: string | null): Promise<boolean> {
   if (!path) return false;
-  const info = await FileSystem.getInfoAsync(path);
-  return info.exists;
+  return new File(path).exists;
 }
