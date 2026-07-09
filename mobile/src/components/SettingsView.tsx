@@ -2,17 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from './Screen';
+import { AppBar } from './AppBar';
 import { AppCard } from './AppCard';
 import { AppButton } from './AppButton';
 import { TextField } from './TextField';
 import { HubUrlInput } from './HubUrlInput';
 import { HubStatusBadge } from './SyncStatusBadge';
+import { Icon } from './Icon';
 import { useAuthStore } from '../state/useAuthStore';
 import { useHubStore } from '../state/useHubStore';
 import { api } from '../services/apiClient';
 import { clearLocalData, resetEverything } from '../db/mobileDb';
-import { colors } from '../theme/colors';
-import { spacing } from '../theme/spacing';
+import { colors, roleAccent } from '../theme/colors';
+import { fonts } from '../theme/typography';
+import { spacing, radius } from '../theme/spacing';
 
 export function SettingsView() {
   const { user, updateHubUrl, updateName, reset } = useAuthStore();
@@ -20,6 +23,7 @@ export function SettingsView() {
   const [hubUrl, setHubUrl] = useState(user?.hubUrl ?? '');
   const [name, setName] = useState(user?.name ?? '');
   const [gemma, setGemma] = useState<string | null>(null);
+  const { accent, accentSoft } = roleAccent(user?.role);
 
   useEffect(() => {
     setHubUrl(user?.hubUrl ?? '');
@@ -77,28 +81,50 @@ export function SettingsView() {
   };
 
   return (
-    <Screen>
-      <HubStatusBadge online={online} />
+    <Screen header={<AppBar title="Settings" role={user?.role} />}>
+      <View style={styles.profile}>
+        <View style={[styles.avatar, { backgroundColor: accentSoft }]}>
+          <Icon name={user?.role === 'teacher' ? 'school' : 'person'} size={28} color={accent} />
+        </View>
+        <View style={styles.flex}>
+          <Text style={styles.name}>{user?.name?.trim() || 'ClassBridge user'}</Text>
+          <Text style={styles.role}>{user?.role === 'teacher' ? 'Teacher' : 'Student'}</Text>
+        </View>
+        <HubStatusBadge online={online} />
+      </View>
       <Text style={styles.detail}>{detail}</Text>
 
       <AppCard>
         <Text style={styles.cardTitle}>Connection</Text>
         <HubUrlInput value={hubUrl} onChangeText={setHubUrl} />
-        <AppButton title="Save Settings" icon="💾" onPress={save} />
+        <AppButton title="Save Settings" icon="save" onPress={save} accent={accent} />
         <AppButton
           title="Test Hub Connection"
-          icon="📡"
+          icon="test"
           variant="secondary"
           onPress={testHub}
           loading={checking}
+          accent={accent}
           style={{ marginTop: spacing.md }}
         />
-        {gemma ? <Text style={styles.gemma}>Gemma provider: {gemma}</Text> : null}
+        {gemma ? (
+          <View style={styles.gemmaRow}>
+            <Icon name="ai" size={16} color={colors.textMuted} />
+            <Text style={styles.gemma}>Gemma: {gemma}</Text>
+          </View>
+        ) : null}
       </AppCard>
 
       <AppCard>
         <Text style={styles.cardTitle}>Profile</Text>
-        <TextField label="Your name" value={name} onChangeText={setName} placeholder="Your name" autoCapitalize="words" />
+        <TextField
+          label="Your name"
+          value={name}
+          onChangeText={setName}
+          placeholder="Your name"
+          autoCapitalize="words"
+          accent={accent}
+        />
         <View style={styles.metaRow}>
           <Text style={styles.metaLabel}>Role</Text>
           <Text style={styles.metaValue}>{user?.role ?? '—'}</Text>
@@ -113,10 +139,10 @@ export function SettingsView() {
 
       <AppCard>
         <Text style={styles.cardTitle}>Danger zone</Text>
-        <AppButton title="Clear Local Data" icon="🧹" variant="ghost" onPress={clearData} />
+        <AppButton title="Clear Local Data" icon="clear" variant="ghost" onPress={clearData} />
         <AppButton
           title="Switch Role / Reset"
-          icon="🔄"
+          icon="reset"
           variant="danger"
           onPress={switchRole}
           style={{ marginTop: spacing.md }}
@@ -127,10 +153,16 @@ export function SettingsView() {
 }
 
 const styles = StyleSheet.create({
-  detail: { fontSize: 12, color: colors.textMuted, marginTop: spacing.xs, marginBottom: spacing.md },
-  cardTitle: { fontSize: 16, fontWeight: '700', color: colors.text, marginBottom: spacing.md },
-  gemma: { fontSize: 13, color: colors.textMuted, marginTop: spacing.md },
+  profile: { flexDirection: 'row', alignItems: 'center', gap: spacing.md, marginBottom: spacing.sm },
+  flex: { flex: 1 },
+  avatar: { width: 52, height: 52, borderRadius: radius.lg, alignItems: 'center', justifyContent: 'center' },
+  name: { fontFamily: fonts.bold, fontSize: 18, color: colors.text },
+  role: { fontFamily: fonts.medium, fontSize: 13, color: colors.textMuted, marginTop: 1 },
+  detail: { fontFamily: fonts.regular, fontSize: 12, color: colors.textFaint, marginBottom: spacing.md },
+  cardTitle: { fontFamily: fonts.bold, fontSize: 16, color: colors.text, marginBottom: spacing.md },
+  gemmaRow: { flexDirection: 'row', alignItems: 'center', gap: 6, marginTop: spacing.md },
+  gemma: { fontFamily: fonts.regular, fontSize: 13, color: colors.textMuted },
   metaRow: { flexDirection: 'row', justifyContent: 'space-between', marginTop: spacing.sm },
-  metaLabel: { fontSize: 14, color: colors.textMuted, fontWeight: '600' },
-  metaValue: { fontSize: 14, color: colors.text, flex: 1, textAlign: 'right', marginLeft: spacing.md },
+  metaLabel: { fontFamily: fonts.medium, fontSize: 14, color: colors.textMuted },
+  metaValue: { fontFamily: fonts.medium, fontSize: 14, color: colors.text, flex: 1, textAlign: 'right', marginLeft: spacing.md },
 });

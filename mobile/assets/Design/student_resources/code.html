@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, viewport-fit=cover" name="viewport"/>
+<title>Student Resources | ClassBridge AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface": "#f9f9fc",
+                    "on-background": "#1a1c1e",
+                    "tertiary": "#260600",
+                    "surface-container-low": "#f3f3f6",
+                    "on-error": "#ffffff",
+                    "background": "#f9f9fc",
+                    "on-secondary-fixed-variant": "#004493",
+                    "inverse-surface": "#2f3133",
+                    "surface-container-high": "#e8e8ea",
+                    "surface-container-lowest": "#ffffff",
+                    "primary-fixed": "#dae1ff",
+                    "on-tertiary-container": "#cc7658",
+                    "surface-bright": "#f9f9fc",
+                    "on-tertiary-fixed-variant": "#76321a",
+                    "on-primary-fixed": "#001849",
+                    "on-secondary-fixed": "#001a41",
+                    "secondary-fixed-dim": "#adc7ff",
+                    "outline": "#757681",
+                    "tertiary-fixed-dim": "#ffb59d",
+                    "on-surface": "#1a1c1e",
+                    "surface-dim": "#dadadc",
+                    "tertiary-container": "#4a1200",
+                    "on-primary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "inverse-primary": "#b3c5ff",
+                    "primary": "#000e32",
+                    "on-tertiary-fixed": "#390c00",
+                    "surface-container-highest": "#e2e2e5",
+                    "inverse-on-surface": "#f0f0f3",
+                    "tertiary-fixed": "#ffdbd0",
+                    "outline-variant": "#c5c6d1",
+                    "surface-variant": "#e2e2e5",
+                    "surface-container": "#eeeef0",
+                    "on-primary-container": "#748bcd",
+                    "on-secondary-container": "#fefcff",
+                    "on-tertiary": "#ffffff",
+                    "on-error-container": "#93000a",
+                    "secondary-fixed": "#d8e2ff",
+                    "primary-fixed-dim": "#b3c5ff",
+                    "error": "#ba1a1a",
+                    "secondary-container": "#0070ea",
+                    "surface-tint": "#455c9a",
+                    "on-surface-variant": "#444650",
+                    "primary-container": "#00215e",
+                    "on-primary-fixed-variant": "#2c4481",
+                    "error-container": "#ffdad6",
+                    "secondary": "#0059bb"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "2xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "1.25rem",
+                    "gutter-mobile": "1rem",
+                    "stack-sm": "0.5rem",
+                    "safe-area": "1rem",
+                    "stack-md": "1rem",
+                    "stack-lg": "1.5rem"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .active-tab-indicator {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky bg-surface dark:bg-on-background z-50">
+<div class="flex justify-between items-center px-margin-mobile py-stack-md w-full">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed" data-icon="hub">hub</span>
+<h1 class="font-headline-md text-headline-md-mobile font-bold text-primary dark:text-primary-fixed">ClassBridge AI</h1>
+</div>
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-primary dark:text-primary-fixed hover:opacity-80 transition-opacity duration-200 cursor-pointer" data-icon="cloud_sync">cloud_sync</span>
+</div>
+</div>
+</header>
+<main class="px-margin-mobile pt-stack-lg space-y-10">
+<!-- Header Section -->
+<section class="space-y-2">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">Student Resources</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Access your materials anytime, even without internet.</p>
+</section>
+<!-- Downloaded Lessons (Horizontal Scroll / Bento Focus) -->
+<section class="space-y-stack-md">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="offline_pin" style="font-variation-settings: 'FILL' 1;">offline_pin</span>
+                    Downloaded Lessons
+                </h3>
+<span class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full font-label-sm text-label-sm">4 Saved</span>
+</div>
+<div class="flex gap-4 overflow-x-auto hide-scrollbar pb-4 -mx-margin-mobile px-margin-mobile">
+<!-- Lesson Card 1 -->
+<div class="flex-shrink-0 w-72 bg-surface-container-lowest rounded-2xl border-l-[4px] border-secondary shadow-sm overflow-hidden flex flex-col">
+<div class="h-32 bg-slate-200 relative">
+<img class="w-full h-full object-cover" data-alt="A macro photograph of geometric crystal structures with azure and navy blue reflections. The lighting is bright and professional, creating a clean educational feel suitable for a science textbook illustration in a modern digital classroom." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAz019neN5z_oT_zmTfSfmEhklTB4gIjQhmjZXQnAojDYgairdzl-JcRi09RlBuMO9LmQ4gYTuknyXDzhRpHKTr3Fb7u3M2dy2qOZCR_a3C9XC4TFHF1ThICKivgGK77nVev7ZWAsAq7vfiXeWXoKBxyvEsJZbXiOu1_EA3oJaDoQMJV5eRAYgud46VIZ7FNG2FGTGuOBd8cEKigc070f62JVyhgTA70qugzG3Ho5OOoWHtYA4vvjVEfaRAPrHSuZYKIYPiljIwM9oP"/>
+<div class="absolute top-2 right-2 bg-secondary text-on-secondary px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">OFFLINE</div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<span class="text-secondary font-label-sm text-label-sm mb-1 uppercase tracking-tight">Physics • Module 4</span>
+<h4 class="font-headline-md text-[18px] text-primary leading-tight mb-2">Quantum Mechanics Introduction</h4>
+<div class="mt-auto pt-4">
+<button class="w-full bg-secondary text-white py-3 rounded-xl font-label-md text-label-md flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px]" data-icon="menu_book">menu_book</span>
+                                Read Lesson
+                            </button>
+</div>
+</div>
+</div>
+<!-- Lesson Card 2 -->
+<div class="flex-shrink-0 w-72 bg-surface-container-lowest rounded-2xl border-l-[4px] border-secondary shadow-sm overflow-hidden flex flex-col">
+<div class="h-32 bg-slate-200 relative">
+<img class="w-full h-full object-cover" data-alt="High-resolution close-up of colorful liquid ink swirling in water, featuring deep navy and bright azure tones. The abstract textures suggest fluidity and exploration, perfectly aligned with a professional education app focused on modern technology and student engagement." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBVmh3kbfPGz3srbNIuBagGyvUb4ar_jVEFgtiziuVXbA0J1QCpbSyXNj5bHHGctR2wA5_-jvG1_fuW9lQRYJN96ongM4q2StiqSX87Gox6EzQmDnZskhOfinNrdcqu02aX0RBEs3Zo-fewnYn7K_0ULpVobNA2mJDXceAbkL02G3Sqdg9p8MVKAn2xxcJeecDo9xWO-EnatfNaA6sx8cfQsWuR6JKYByV_7DC1ZlsjWIm1YYiwu9UIk88GqbjvUc4-CkaXvVhLMnfj"/>
+<div class="absolute top-2 right-2 bg-secondary text-on-secondary px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">OFFLINE</div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<span class="text-secondary font-label-sm text-label-sm mb-1 uppercase tracking-tight">Math • Unit 2</span>
+<h4 class="font-headline-md text-[18px] text-primary leading-tight mb-2">Advanced Calculus Functions</h4>
+<div class="mt-auto pt-4">
+<button class="w-full bg-secondary text-white py-3 rounded-xl font-label-md text-label-md flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px]" data-icon="menu_book">menu_book</span>
+                                Read Lesson
+                            </button>
+</div>
+</div>
+</div>
+<!-- Lesson Card 3 -->
+<div class="flex-shrink-0 w-72 bg-surface-container-lowest rounded-2xl border-l-[4px] border-secondary shadow-sm overflow-hidden flex flex-col">
+<div class="h-32 bg-slate-200 relative">
+<img class="w-full h-full object-cover" data-alt="A minimalist architectural shot of a modern university building with clean white lines and a deep blue sky backdrop. The scene is bright and airy, reflecting a high-trust educational atmosphere with a focus on structural clarity and professional design aesthetics." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBafuulo_9hp_kLsQGI1xj9N68P52-U73Vpgj8iOvJ_hG-RhH74bj06Un3_snk1xhO9zbqlQWlOW0TudbgBi54KGYAOf9jPJJA3pnmdbq9FINDHH8vZvSZ5azBMDTfKN8vJnt__GYfoD70RNxFCD1FJfNuM6K31QfsGfYeSTli-N-CAKyhrIlOSY0D2tpFLJFyEgSANnoySiku5OXokMzMAJ22bITo7uS42xMOgZDCjz3Iti-76dPSw-NAphzb3UDJgzLdgwCRU2-sT"/>
+<div class="absolute top-2 right-2 bg-secondary text-on-secondary px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider">OFFLINE</div>
+</div>
+<div class="p-4 flex flex-col flex-grow">
+<span class="text-secondary font-label-sm text-label-sm mb-1 uppercase tracking-tight">History • Sect 1</span>
+<h4 class="font-headline-md text-[18px] text-primary leading-tight mb-2">The Industrial Revolution</h4>
+<div class="mt-auto pt-4">
+<button class="w-full bg-secondary text-white py-3 rounded-xl font-label-md text-label-md flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all">
+<span class="material-symbols-outlined text-[18px]" data-icon="menu_book">menu_book</span>
+                                Read Lesson
+                            </button>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Available on Hub (Asymmetric / List Focus) -->
+<section class="space-y-stack-md">
+<div class="flex items-center justify-between">
+<h3 class="font-headline-md text-headline-md text-primary flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary" data-icon="language">language</span>
+                    Available on Hub
+                </h3>
+<span class="text-on-surface-variant font-label-sm text-label-sm">8 New</span>
+</div>
+<div class="space-y-4">
+<!-- Hub Card 1 -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-4 flex items-center gap-4 group hover:bg-surface-container-low transition-colors duration-200">
+<div class="w-16 h-16 rounded-xl bg-primary-fixed flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="biotech">biotech</span>
+</div>
+<div class="flex-grow">
+<h4 class="font-headline-md text-[16px] text-primary">Microbiology Fundamentals</h4>
+<p class="font-body-md text-label-sm text-on-surface-variant">12.4 MB • High Priority</p>
+</div>
+<button class="w-12 h-12 flex items-center justify-center bg-secondary-container text-on-secondary-container rounded-full hover:scale-105 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+</button>
+</div>
+<!-- Hub Card 2 -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-4 flex items-center gap-4 group hover:bg-surface-container-low transition-colors duration-200">
+<div class="w-16 h-16 rounded-xl bg-primary-fixed flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="architecture">architecture</span>
+</div>
+<div class="flex-grow">
+<h4 class="font-headline-md text-[16px] text-primary">Principles of Design</h4>
+<p class="font-body-md text-label-sm text-on-surface-variant">45.0 MB • Visual Media</p>
+</div>
+<button class="w-12 h-12 flex items-center justify-center bg-secondary-container text-on-secondary-container rounded-full hover:scale-105 active:scale-95 transition-transform">
+<span class="material-symbols-outlined" data-icon="download">download</span>
+</button>
+</div>
+<!-- Hub Card 3 -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-2xl p-4 flex items-center gap-4 group hover:bg-surface-container-low transition-colors duration-200">
+<div class="w-16 h-16 rounded-xl bg-primary-fixed flex items-center justify-center flex-shrink-0">
+<span class="material-symbols-outlined text-primary text-3xl" data-icon="terminal">terminal</span>
+</div>
+<div class="flex-grow">
+<h4 class="font-headline-md text-[16px] text-primary">Python for Beginners</h4>
+<p class="font-body-md text-label-sm text-on-surface-variant">8.2 MB • Required</p>
+</div>
+<div class="flex items-center justify-center w-12 h-12">
+<!-- Progress Ring Simulation -->
+<div class="relative w-10 h-10 flex items-center justify-center">
+<svg class="w-full h-full -rotate-90">
+<circle class="text-outline-variant/20" cx="20" cy="20" fill="transparent" r="18" stroke="currentColor" stroke-width="4"></circle>
+<circle class="text-secondary" cx="20" cy="20" fill="transparent" r="18" stroke="currentColor" stroke-dasharray="113" stroke-dashoffset="40" stroke-width="4"></circle>
+</svg>
+<span class="absolute text-[10px] font-bold text-secondary">65%</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Storage Info Card -->
+<div class="bg-primary text-on-primary rounded-2xl p-6 relative overflow-hidden">
+<div class="relative z-10">
+<h4 class="font-headline-md text-[18px] mb-2">Storage Usage</h4>
+<div class="w-full bg-white/20 h-2 rounded-full mb-2">
+<div class="bg-secondary-fixed-dim h-full rounded-full" style="width: 42%;"></div>
+</div>
+<div class="flex justify-between text-label-sm font-label-sm opacity-80">
+<span>1.2GB Used</span>
+<span>3.0GB Total</span>
+</div>
+</div>
+<!-- Decorative circle -->
+<div class="absolute -right-10 -bottom-10 w-40 h-40 bg-secondary rounded-full opacity-20 blur-2xl"></div>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-safe pt-2 bg-surface-container-lowest dark:bg-inverse-surface border-t border-outline-variant/30 shadow-md z-50 rounded-t-[24px]">
+<!-- Lessons -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1.5 hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-sm text-label-sm">Lessons</span>
+</a>
+<!-- Resources (ACTIVE) -->
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-xl px-4 py-1.5 Active: scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="folder_open" style="font-variation-settings: 'FILL' 1;">folder_open</span>
+<span class="font-label-sm text-label-sm">Resources</span>
+</a>
+<!-- Sync -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1.5 hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="sync">sync</span>
+<span class="font-label-sm text-label-sm">Sync</span>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1.5 hover:bg-surface-container-high dark:hover:bg-surface-variant transition-colors rounded-xl" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interaction for download buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('click', function() {
+                if (this.querySelector('[data-icon="download"]')) {
+                    const icon = this.querySelector('[data-icon="download"]');
+                    icon.textContent = 'hourglass_top';
+                    this.classList.add('animate-pulse');
+                    setTimeout(() => {
+                        icon.textContent = 'check_circle';
+                        this.classList.remove('animate-pulse');
+                        this.classList.add('bg-green-100', 'text-green-700');
+                    }, 2000);
+                }
+            });
+        });
+    </script>
+</body></html>

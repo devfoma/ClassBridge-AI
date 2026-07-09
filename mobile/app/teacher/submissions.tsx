@@ -2,13 +2,16 @@ import React, { useCallback, useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
+import { AppBar } from '../../src/components/AppBar';
 import { SubmissionCard } from '../../src/components/SubmissionCard';
 import { AppCard } from '../../src/components/AppCard';
 import { EmptyState } from '../../src/components/EmptyState';
+import { Icon } from '../../src/components/Icon';
 import { useAuthStore } from '../../src/state/useAuthStore';
 import { api } from '../../src/services/apiClient';
 import { colors } from '../../src/theme/colors';
-import { spacing } from '../../src/theme/spacing';
+import { fonts } from '../../src/theme/typography';
+import { spacing, radius } from '../../src/theme/spacing';
 
 interface ClassRow {
   id: string;
@@ -57,23 +60,30 @@ export default function Submissions() {
   );
 
   return (
-    <Screen onRefresh={load} refreshing={refreshing}>
+    <Screen header={<AppBar title="Submissions" role="teacher" />} onRefresh={load} refreshing={refreshing}>
       {classes.length > 1 ? (
         <View style={styles.chips}>
-          {classes.map((c) => (
-            <Pressable
-              key={c.id}
-              onPress={() => setClassroomId(c.id)}
-              style={[styles.chip, classroomId === c.id && styles.chipActive]}
-            >
-              <Text style={[styles.chipText, classroomId === c.id && styles.chipTextActive]}>{c.name}</Text>
-            </Pressable>
-          ))}
+          {classes.map((c) => {
+            const active = classroomId === c.id;
+            return (
+              <Pressable
+                key={c.id}
+                onPress={() => setClassroomId(c.id)}
+                style={[styles.chip, active && styles.chipActive]}
+              >
+                <Text style={[styles.chipText, active && styles.chipTextActive]}>{c.name}</Text>
+              </Pressable>
+            );
+          })}
         </View>
       ) : null}
 
       {subs.length === 0 ? (
-        <EmptyState icon="📥" title="No submissions yet" message="When students sync their quizzes, they appear here with AI feedback." />
+        <EmptyState
+          icon="submissions"
+          title="No submissions yet"
+          message="When students sync their quizzes, they appear here with AI feedback."
+        />
       ) : (
         subs.map((s) => (
           <View key={s.id}>
@@ -86,8 +96,11 @@ export default function Submissions() {
               onPress={() => setExpanded(expanded === s.id ? null : s.id)}
             />
             {expanded === s.id ? (
-              <AppCard style={styles.feedbackCard}>
-                <Text style={styles.feedbackTitle}>AI Feedback</Text>
+              <AppCard style={styles.feedbackCard} elevated={false}>
+                <View style={styles.feedbackHead}>
+                  <Icon name="ai" size={16} color={colors.navy} />
+                  <Text style={styles.feedbackTitle}>AI Feedback</Text>
+                </View>
                 {s.feedback.map((f, i) => (
                   <View key={i} style={styles.feedbackItem}>
                     <Text style={styles.feedbackText}>• {f.feedback}</Text>
@@ -109,17 +122,19 @@ const styles = StyleSheet.create({
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginBottom: spacing.md },
   chip: {
     borderWidth: 1.5,
-    borderColor: colors.border,
-    borderRadius: 999,
+    borderColor: colors.outlineVariant,
+    borderRadius: radius.pill,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
+    backgroundColor: colors.card,
   },
-  chipActive: { borderColor: colors.blue, backgroundColor: colors.blueSoft },
-  chipText: { fontSize: 13, color: colors.text, fontWeight: '600' },
-  chipTextActive: { color: colors.navy, fontWeight: '800' },
-  feedbackCard: { marginTop: -spacing.sm, backgroundColor: colors.infoSoft },
-  feedbackTitle: { fontSize: 14, fontWeight: '800', color: colors.navy, marginBottom: spacing.sm },
+  chipActive: { borderColor: colors.navy, backgroundColor: colors.navySoft },
+  chipText: { fontFamily: fonts.semibold, fontSize: 13, color: colors.textMuted },
+  chipTextActive: { fontFamily: fonts.bold, color: colors.navy },
+  feedbackCard: { marginTop: -spacing.sm, backgroundColor: colors.infoSoft, borderColor: colors.blueSoft },
+  feedbackHead: { flexDirection: 'row', alignItems: 'center', gap: 6, marginBottom: spacing.sm },
+  feedbackTitle: { fontFamily: fonts.extrabold, fontSize: 14, color: colors.navy },
   feedbackItem: { marginBottom: spacing.sm },
-  feedbackText: { fontSize: 14, color: colors.text, lineHeight: 20 },
-  misconception: { fontSize: 13, color: colors.warning, marginTop: 2, fontStyle: 'italic' },
+  feedbackText: { fontFamily: fonts.regular, fontSize: 14, color: colors.text, lineHeight: 20 },
+  misconception: { fontFamily: fonts.regular, fontSize: 13, color: colors.warning, marginTop: 2, fontStyle: 'italic' },
 });

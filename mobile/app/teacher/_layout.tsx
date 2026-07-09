@@ -1,26 +1,22 @@
 import React from 'react';
-import { Stack } from 'expo-router';
+import { Tabs } from 'expo-router';
+import { TabBar, TabItem } from '../../src/components/TabBar';
 import { colors } from '../../src/theme/colors';
+
+const TABS: TabItem[] = [
+  { name: 'dashboard', label: 'Home', icon: 'dashboard' },
+  { name: 'library', label: 'Library', icon: 'library' },
+  { name: 'submissions', label: 'Grades', icon: 'submissions' },
+  { name: 'settings', label: 'Settings', icon: 'settings' },
+];
 
 export default function TeacherLayout() {
   return (
-    <Stack
-      screenOptions={{
-        headerStyle: { backgroundColor: colors.navy },
-        headerTintColor: colors.textInverse,
-        headerTitleStyle: { fontWeight: '800' },
-        contentStyle: { backgroundColor: colors.bg },
-      }}
-    >
-      <Stack.Screen name="dashboard" options={{ title: 'Teacher', headerShown: false }} />
-      <Stack.Screen name="classrooms" options={{ title: 'Classrooms' }} />
-      <Stack.Screen name="classroom-detail" options={{ title: 'Class' }} />
-      <Stack.Screen name="library" options={{ title: 'Library' }} />
-      <Stack.Screen name="upload-resource" options={{ title: 'Upload Resource' }} />
-      <Stack.Screen name="assignment-create" options={{ title: 'Create Assignment' }} />
-      <Stack.Screen name="submissions" options={{ title: 'Submissions' }} />
-      <Stack.Screen name="insights" options={{ title: 'AI Insights' }} />
-      <Stack.Screen name="settings" options={{ title: 'Settings' }} />
-    </Stack>
+    <Tabs
+      screenOptions={{ headerShown: false }}
+      tabBar={(props) => (
+        <TabBar {...props} items={TABS} accent={colors.teacher} accentSoft={colors.teacherSoft} />
+      )}
+    />
   );
 }

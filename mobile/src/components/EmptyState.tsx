@@ -1,18 +1,22 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import { Icon, IconName } from './Icon';
 import { colors } from '../theme/colors';
-import { spacing } from '../theme/spacing';
+import { fonts } from '../theme/typography';
+import { radius, spacing } from '../theme/spacing';
 
 interface Props {
-  icon?: string;
+  icon?: IconName;
   title: string;
   message?: string;
 }
 
-export function EmptyState({ icon = '📭', title, message }: Props) {
+export function EmptyState({ icon = 'resource', title, message }: Props) {
   return (
     <View style={styles.container}>
-      <Text style={styles.icon}>{icon}</Text>
+      <View style={styles.iconWrap}>
+        <Icon name={icon} size={30} color={colors.outline} />
+      </View>
       <Text style={styles.title}>{title}</Text>
       {message ? <Text style={styles.message}>{message}</Text> : null}
     </View>
@@ -26,9 +30,18 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.xxl,
     paddingHorizontal: spacing.xl,
   },
-  icon: { fontSize: 44, marginBottom: spacing.md },
-  title: { fontSize: 17, fontWeight: '700', color: colors.text, textAlign: 'center' },
+  iconWrap: {
+    width: 64,
+    height: 64,
+    borderRadius: radius.card,
+    backgroundColor: colors.surface2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.lg,
+  },
+  title: { fontFamily: fonts.bold, fontSize: 17, color: colors.text, textAlign: 'center' },
   message: {
+    fontFamily: fonts.regular,
     fontSize: 14,
     color: colors.textMuted,
     textAlign: 'center',

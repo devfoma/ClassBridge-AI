@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ClassBridge AI - Lesson View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            line-height: 1;
+            text-transform: none;
+            letter-spacing: normal;
+            word-wrap: normal;
+            white-space: nowrap;
+            direction: ltr;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(8px);
+            border: 1px solid #E2E8F0;
+        }
+        .accent-bar-student {
+            border-left: 4px solid #0070ea;
+        }
+        @media (max-width: 768px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary": "#000e32",
+                      "on-primary-fixed": "#001849",
+                      "on-tertiary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "primary-fixed": "#dae1ff",
+                      "surface-container-low": "#f3f3f6",
+                      "secondary": "#0059bb",
+                      "surface-dim": "#dadadc",
+                      "inverse-primary": "#b3c5ff",
+                      "on-secondary-fixed-variant": "#004493",
+                      "on-primary": "#ffffff",
+                      "outline-variant": "#c5c6d1",
+                      "on-secondary-container": "#fefcff",
+                      "on-primary-fixed-variant": "#2c4481",
+                      "on-surface-variant": "#444650",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-tint": "#455c9a",
+                      "secondary-container": "#0070ea",
+                      "secondary-fixed-dim": "#adc7ff",
+                      "tertiary-fixed": "#ffdbd0",
+                      "on-background": "#1a1c1e",
+                      "on-error": "#ffffff",
+                      "on-surface": "#1a1c1e",
+                      "primary-container": "#00215e",
+                      "surface-bright": "#f9f9fc",
+                      "surface-container-highest": "#e2e2e5",
+                      "secondary-fixed": "#d8e2ff",
+                      "on-secondary-fixed": "#001a41",
+                      "surface": "#f9f9fc",
+                      "surface-container-high": "#e8e8ea",
+                      "on-tertiary-container": "#cc7658",
+                      "tertiary-container": "#4a1200",
+                      "surface-variant": "#e2e2e5",
+                      "surface-container": "#eeeef0",
+                      "on-primary-container": "#748bcd",
+                      "tertiary-fixed-dim": "#ffb59d",
+                      "error-container": "#ffdad6",
+                      "outline": "#757681",
+                      "inverse-on-surface": "#f0f0f3",
+                      "on-error-container": "#93000a",
+                      "on-tertiary-fixed-variant": "#76321a",
+                      "inverse-surface": "#2f3133",
+                      "tertiary": "#260600",
+                      "background": "#f9f9fc",
+                      "on-tertiary-fixed": "#390c00",
+                      "on-secondary": "#ffffff",
+                      "primary-fixed-dim": "#b3c5ff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "stack-sm": "0.5rem",
+                      "margin-mobile": "1.25rem",
+                      "safe-area": "1rem",
+                      "stack-md": "1rem",
+                      "gutter-mobile": "1rem",
+                      "stack-lg": "1.5rem"
+              },
+              "fontFamily": {
+                      "headline-md": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-lg": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-lg-mobile": ["Inter"],
+                      "label-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                      "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen flex flex-col">
+<!-- TopAppBar -->
+<header class="fixed top-0 w-full z-50 flex items-center justify-between px-margin-mobile h-16 w-full bg-surface border-b border-outline-variant">
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-primary" data-icon="signal_wifi_off">signal_wifi_off</span>
+<h1 class="font-headline-md text-headline-md-mobile font-bold text-primary">ClassBridge AI</h1>
+</div>
+<div class="flex items-center gap-stack-md">
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="sync">sync</span>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="mt-16 mb-24 px-margin-mobile py-stack-lg flex-grow max-w-4xl mx-auto w-full">
+<!-- Header Title Section -->
+<div class="mb-stack-lg">
+<nav class="flex items-center text-label-sm text-on-surface-variant mb-stack-sm">
+<span>Physics</span>
+<span class="material-symbols-outlined text-[14px] mx-1">chevron_right</span>
+<span class="text-secondary font-semibold">Unit 1</span>
+</nav>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">Physics - Newton's Laws</h2>
+<div class="mt-stack-md flex items-center gap-2">
+<div class="bg-secondary/10 text-secondary px-3 py-1 rounded-full flex items-center gap-1.5 border border-secondary/20">
+<span class="material-symbols-outlined text-[18px]" data-icon="check_circle" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+<span class="font-label-sm text-label-sm">Downloaded &amp; Ready Offline</span>
+</div>
+</div>
+</div>
+<!-- Bento Layout: Summary & Visual -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-stack-md mb-stack-lg">
+<!-- AI Summary Card -->
+<div class="md:col-span-12 glass-card rounded-xl p-stack-lg accent-bar-student shadow-sm">
+<div class="flex items-center gap-2 mb-stack-md">
+<span class="material-symbols-outlined text-secondary" data-icon="auto_awesome">auto_awesome</span>
+<h3 class="font-headline-md text-[20px] text-primary">AI Summary</h3>
+</div>
+<ul class="space-y-stack-sm">
+<li class="flex gap-stack-sm items-start">
+<span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>
+<p class="font-body-md text-body-md text-on-surface-variant">Newton's First Law (Inertia) states objects remain at rest or constant motion unless acted upon by an external force.</p>
+</li>
+<li class="flex gap-stack-sm items-start">
+<span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>
+<p class="font-body-md text-body-md text-on-surface-variant">Second Law (F=ma) quantifies how force impacts acceleration relative to an object's mass.</p>
+</li>
+<li class="flex gap-stack-sm items-start">
+<span class="mt-1.5 w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>
+<p class="font-body-md text-body-md text-on-surface-variant">Third Law explains that forces always occur in equal and opposite pairs between interacting objects.</p>
+</li>
+</ul>
+<div class="mt-4 pt-3 border-t border-outline-variant flex justify-between items-center">
+<span class="text-label-sm font-label-sm text-outline">Generated by Gemma AI</span>
+<button class="text-secondary font-label-md text-label-md flex items-center gap-1 hover:underline">
+                        Hear Summary <span class="material-symbols-outlined text-[18px]">volume_up</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Lesson Material Section -->
+<section class="mb-stack-lg">
+<h3 class="font-headline-md text-headline-md text-primary mb-stack-md">Lesson Material</h3>
+<div class="space-y-stack-md">
+<div class="rounded-xl overflow-hidden border border-outline-variant aspect-video relative group cursor-pointer mb-stack-md">
+<div class="w-full h-full bg-cover bg-center" data-alt="A highly detailed 3D scientific visualization of Newton's cradle set against a minimalist laboratory background. The lighting is crisp and cool, utilizing a professional corporate color palette of deep navy blues and clean whites. The polished steel spheres reflect a soft blue glow, symbolizing the transfer of kinetic energy in a modern, educational digital style that feels both high-tech and accessible." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAGE2iAUbuscNkatOAu6TwJdgWpGYkkJQKizbZ2ftCZ8wmEXfZlJTUWYfxu9coyjOpUoxucizdqmOJHCtrrDhgv0u9iN9b4R7znrOHNnSwzVeVV8nKuXpxLXZEdy3wbQL2l39eGgokXaiWuQtSKqxURb-a5sI-nGgmdpeXyjwwdBWZvkNIu9s6cqchvQKTZHerEq9Ppe60oKquIHpyr9PF-DoAEsUQtkuTtIgZWT9_0SV7aviEOuBOIaWXJnXVGpfqMWpeq6cpjRuvU')"></div>
+<div class="absolute inset-0 bg-primary/20 flex items-center justify-center transition-opacity group-hover:bg-primary/30">
+<div class="bg-white/90 p-4 rounded-full shadow-lg">
+<span class="material-symbols-outlined text-secondary text-[32px]" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+</div>
+<div class="prose prose-slate max-w-none">
+<p class="font-body-lg text-body-lg text-on-surface leading-relaxed mb-4">
+                        The laws of motion are three physical laws that, together, laid the foundation for classical mechanics. They describe the relationship between a body and the forces acting upon it, and its motion in response to those forces.
+                    </p>
+<div class="bg-surface-container p-stack-md rounded-xl border-l-4 border-secondary mb-4">
+<p class="font-body-md text-body-md italic text-on-surface-variant">
+                            "If I have seen further it is by standing on the shoulders of Giants." — Isaac Newton
+                        </p>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant leading-relaxed">
+                        In this module, we will explore the mathematical implications of F=ma and perform virtual simulations to see how friction affects the acceleration of various masses in a vacuum versus a standard environment.
+                    </p>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<div class="fixed bottom-24 left-0 w-full px-margin-mobile md:static md:px-0">
+<button class="w-full bg-secondary text-on-secondary h-14 rounded-xl font-label-md text-body-md flex items-center justify-center gap-stack-md shadow-lg active:scale-[0.98] transition-transform duration-150">
+<span class="material-symbols-outlined" data-icon="quiz">quiz</span>
+                Take Offline Quiz
+            </button>
+</div>
+<!-- Sync Indicator -->
+<div class="flex items-center justify-center gap-1 mt-stack-lg mb-4">
+<span class="material-symbols-outlined text-[14px] text-on-surface-variant" data-icon="sync_saved_locally">sync_saved_locally</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Last synced: 2m ago</span>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface border-t border-outline-variant shadow-sm flex justify-around items-center h-20 px-2 pb-safe">
+<!-- Lessons (Active) -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-2xl px-4 py-1 transition-transform duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="auto_stories" style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+<span class="font-label-md text-label-md">Lessons</span>
+</a>
+<!-- Resources -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high transition-transform duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="folder_shared">folder_shared</span>
+<span class="font-label-md text-label-md">Resources</span>
+</a>
+<!-- Sync -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high transition-transform duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="sync_saved_locally">sync_saved_locally</span>
+<span class="font-label-md text-label-md">Sync</span>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container-high transition-transform duration-150 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple micro-interaction for the quiz button
+        document.querySelector('button').addEventListener('click', function() {
+            this.classList.add('bg-on-secondary-fixed-variant');
+            setTimeout(() => {
+                this.classList.remove('bg-on-secondary-fixed-variant');
+            }, 200);
+        });
+    </script>
+</body></html>

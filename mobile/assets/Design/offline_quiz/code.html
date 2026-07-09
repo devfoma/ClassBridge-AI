@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ClassBridge AI - Student Quiz</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Inter', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .quiz-option-radio:checked + label {
+            border-color: #0059bb;
+            background-color: #f0f7ff;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "primary": "#000e32",
+                    "on-primary-fixed": "#001849",
+                    "on-tertiary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "primary-fixed": "#dae1ff",
+                    "surface-container-low": "#f3f3f6",
+                    "secondary": "#0059bb",
+                    "surface-dim": "#dadadc",
+                    "inverse-primary": "#b3c5ff",
+                    "on-secondary-fixed-variant": "#004493",
+                    "on-primary": "#ffffff",
+                    "outline-variant": "#c5c6d1",
+                    "on-secondary-container": "#fefcff",
+                    "on-primary-fixed-variant": "#2c4481",
+                    "on-surface-variant": "#444650",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-tint": "#455c9a",
+                    "secondary-container": "#0070ea",
+                    "secondary-fixed-dim": "#adc7ff",
+                    "tertiary-fixed": "#ffdbd0",
+                    "on-background": "#1a1c1e",
+                    "on-error": "#ffffff",
+                    "on-surface": "#1a1c1e",
+                    "primary-container": "#00215e",
+                    "surface-bright": "#f9f9fc",
+                    "surface-container-highest": "#e2e2e5",
+                    "secondary-fixed": "#d8e2ff",
+                    "on-secondary-fixed": "#001a41",
+                    "surface": "#f9f9fc",
+                    "surface-container-high": "#e8e8ea",
+                    "on-tertiary-container": "#cc7658",
+                    "tertiary-container": "#4a1200",
+                    "surface-variant": "#e2e2e5",
+                    "surface-container": "#eeeef0",
+                    "on-primary-container": "#748bcd",
+                    "tertiary-fixed-dim": "#ffb59d",
+                    "error-container": "#ffdad6",
+                    "outline": "#757681",
+                    "inverse-on-surface": "#f0f0f3",
+                    "on-error-container": "#93000a",
+                    "on-tertiary-fixed-variant": "#76321a",
+                    "inverse-surface": "#2f3133",
+                    "tertiary": "#260600",
+                    "background": "#f9f9fc",
+                    "on-tertiary-fixed": "#390c00",
+                    "on-secondary": "#ffffff",
+                    "primary-fixed-dim": "#b3c5ff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "stack-sm": "0.5rem",
+                    "margin-mobile": "1.25rem",
+                    "safe-area": "1rem",
+                    "stack-md": "1rem",
+                    "gutter-mobile": "1rem",
+                    "stack-lg": "1.5rem"
+            },
+            "fontFamily": {
+                    "headline-md": ["Inter"],
+                    "body-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "label-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface flex flex-col min-h-screen">
+<!-- Top Navigation Anchor (Task Focused Header - No Global Nav) -->
+<header class="fixed top-0 w-full z-50 bg-surface dark:bg-background border-b border-outline-variant dark:border-outline h-16 flex items-center justify-between px-margin-mobile">
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md-mobile text-primary">Quiz: Newton's Laws</h1>
+</div>
+<div class="flex items-center gap-2 px-3 py-1 bg-surface-container rounded-full border border-outline-variant">
+<span class="material-symbols-outlined text-on-surface-variant text-[18px]">signal_wifi_off</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Offline Mode</span>
+</div>
+</header>
+<main class="mt-16 mb-24 px-margin-mobile pt-8 flex-grow max-w-2xl mx-auto w-full">
+<!-- Progress Section -->
+<section class="mb-10">
+<div class="flex justify-between items-end mb-3">
+<p class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">Progress</p>
+<p class="font-headline-md text-headline-md-mobile text-primary">Question 2 of 5</p>
+</div>
+<div class="h-2 w-full bg-surface-container-highest rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-2/5 rounded-full transition-all duration-500 ease-out"></div>
+</div>
+</section>
+<!-- Question Container -->
+<div class="space-y-stack-lg">
+<!-- Multiple Choice Question -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<div class="flex items-start gap-4">
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant px-3 py-1 rounded-lg font-bold text-sm">Q2</span>
+<h3 class="font-headline-md text-headline-md text-primary mb-6">What is the unit of Force?</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- Options -->
+<div class="relative">
+<input class="hidden quiz-option-radio" id="opt1" name="force_unit" type="radio"/>
+<label class="flex items-center p-4 border border-outline-variant rounded-xl cursor-pointer transition-all hover:bg-surface-bright active:scale-[0.98]" for="opt1">
+<span class="w-6 h-6 border-2 border-outline rounded-full flex items-center justify-center mr-3 shrink-0"></span>
+<span class="font-body-md text-body-md text-on-surface">Watt</span>
+</label>
+</div>
+<div class="relative">
+<input class="hidden quiz-option-radio" id="opt2" name="force_unit" type="radio"/>
+<label class="flex items-center p-4 border border-outline-variant rounded-xl cursor-pointer transition-all hover:bg-surface-bright active:scale-[0.98]" for="opt2">
+<span class="w-6 h-6 border-2 border-outline rounded-full flex items-center justify-center mr-3 shrink-0"></span>
+<span class="font-body-md text-body-md text-on-surface">Newton</span>
+</label>
+</div>
+<div class="relative">
+<input class="hidden quiz-option-radio" id="opt3" name="force_unit" type="radio"/>
+<label class="flex items-center p-4 border border-outline-variant rounded-xl cursor-pointer transition-all hover:bg-surface-bright active:scale-[0.98]" for="opt3">
+<span class="w-6 h-6 border-2 border-outline rounded-full flex items-center justify-center mr-3 shrink-0"></span>
+<span class="font-body-md text-body-md text-on-surface">Joule</span>
+</label>
+</div>
+<div class="relative">
+<input class="hidden quiz-option-radio" id="opt4" name="force_unit" type="radio"/>
+<label class="flex items-center p-4 border border-outline-variant rounded-xl cursor-pointer transition-all hover:bg-surface-bright active:scale-[0.98]" for="opt4">
+<span class="w-6 h-6 border-2 border-outline rounded-full flex items-center justify-center mr-3 shrink-0"></span>
+<span class="font-body-md text-body-md text-on-surface">Volt</span>
+</label>
+</div>
+</div>
+</div>
+<!-- Short Answer Question -->
+<div class="bg-surface-container-lowest p-6 rounded-xl border border-outline-variant relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-secondary"></div>
+<div class="flex items-start gap-4">
+<span class="bg-secondary-fixed text-on-secondary-fixed-variant px-3 py-1 rounded-lg font-bold text-sm">Q3</span>
+<h3 class="font-headline-md text-headline-md text-primary mb-2">Explain inertia in your own words</h3>
+</div>
+<div class="mt-4">
+<label class="font-label-sm text-label-sm text-on-surface-variant block mb-2">Your Answer</label>
+<textarea class="w-full min-h-[150px] p-4 bg-surface rounded-xl border border-outline focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all font-body-md text-body-md resize-none" placeholder="Type your explanation here..."></textarea>
+<div class="mt-4 flex items-center gap-2 bg-secondary-fixed/30 p-3 rounded-lg border border-secondary-fixed">
+<span class="material-symbols-outlined text-secondary text-[20px]">psychology</span>
+<p class="font-label-md text-label-md text-on-secondary-fixed-variant">AI will grade this upon sync</p>
+</div>
+</div>
+</div>
+<!-- Illustration Asset (Decorative for Soft Tech feel) -->
+<div class="py-6 flex justify-center opacity-40">
+<div class="w-48 h-32 bg-contain bg-no-repeat bg-center" data-alt="A clean minimalist high-trust illustration of a student interacting with a glowing digital holographic brain and atomic symbols. The style is professional tech with soft shadows, azure blue accents, and a pure white background. The mood is focused and educational with a corporate modern aesthetic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDRtp201HNRKTdF0y6fZPiFDEQPWWYxKmRTRudnimoOU1HdTN_5P9ntLphL8cbKAbjbcCkJ6ceuGT0vYQ2fWcwoa3HpzZi5rnZnkpvooWRGaSAsBmnXIkQK1KFnUhN-f7MMMeGLaAhFG9WXAXPfcwv3KJpZNVK0zD2iKIW4TjX21dI7aLBPNCkCKNM_AzXRe2RS9gxiqWkBje-JFvLrZb1-WcAWVW5J9piKY8UnzrbAi5ayNX6ExTodoZm98TkS8cvqvGhWnv2f89b2')"></div>
+</div>
+</div>
+</main>
+<!-- Bottom Actions & Floating Indicator -->
+<div class="fixed bottom-0 left-0 w-full p-margin-mobile bg-gradient-to-t from-surface via-surface to-transparent pointer-events-none">
+<div class="max-w-2xl mx-auto flex flex-col md:flex-row gap-4 items-center justify-between pointer-events-auto">
+<!-- Offline Status Indicator -->
+<div class="flex items-center gap-2 bg-on-surface text-surface py-2 px-4 rounded-full shadow-lg transition-all duration-300 transform scale-100" id="sync-toast">
+<span class="material-symbols-outlined text-[18px]">cloud_off</span>
+<span class="font-label-md text-label-md">Saved Offline</span>
+</div>
+<div class="flex gap-4 w-full md:w-auto">
+<button class="flex-1 md:flex-none px-6 py-3 border-[1.5px] border-secondary bg-white text-secondary font-label-md text-label-md rounded-xl hover:bg-secondary-container/10 transition-all flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]">save</span>
+                    Save &amp; Sync Later
+                </button>
+<button class="flex-1 md:flex-none px-8 py-3 bg-secondary text-on-secondary font-label-md text-label-md rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2">
+                    Next Question
+                    <span class="material-symbols-outlined text-[20px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Micro-interaction Script -->
+<script>
+        document.querySelectorAll('.quiz-option-radio').forEach(radio => {
+            radio.addEventListener('change', () => {
+                const toast = document.getElementById('sync-toast');
+                toast.classList.add('translate-y-[-10px]');
+                setTimeout(() => {
+                    toast.classList.remove('translate-y-[-10px]');
+                }, 300);
+            });
+        });
+
+        // Floating sync status micro-animation
+        setInterval(() => {
+            const toast = document.getElementById('sync-toast');
+            toast.style.opacity = '0.9';
+            setTimeout(() => {
+                toast.style.opacity = '1';
+            }, 1000);
+        }, 5000);
+    </script>
+</body></html>

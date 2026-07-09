@@ -2,9 +2,11 @@ import React, { useCallback, useState } from 'react';
 import { Alert, StyleSheet, Text, View } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
+import { AppBar } from '../../src/components/AppBar';
 import { AppButton } from '../../src/components/AppButton';
 import { AppCard } from '../../src/components/AppCard';
 import { EmptyState } from '../../src/components/EmptyState';
+import { ProgressBar } from '../../src/components/ProgressBar';
 import { QuizQuestion } from '../../src/components/QuizQuestion';
 import { useAuthStore } from '../../src/state/useAuthStore';
 import { useSyncStore } from '../../src/state/useSyncStore';
@@ -17,6 +19,7 @@ import { scoreQuizLocally, answeredCount } from '../../src/services/quizScoring'
 import { newId } from '../../src/utils/ids';
 import { nowIso } from '../../src/utils/dates';
 import { colors } from '../../src/theme/colors';
+import { fonts } from '../../src/theme/typography';
 import { spacing } from '../../src/theme/spacing';
 
 export default function Quiz() {
@@ -62,7 +65,6 @@ export default function Quiz() {
       studentId: user.id,
       answers: ans,
       status,
-      // Provisional local score (MC only). The hub re-grades authoritatively on sync.
       score: status === 'completed_unsynced' ? local.score : null,
       maxScore: status === 'completed_unsynced' ? local.maxScore : null,
       feedback: null,
@@ -102,7 +104,7 @@ export default function Quiz() {
     await persist('completed_unsynced');
     setSaving(false);
     Alert.alert(
-      'Saved Offline ✅',
+      'Saved Offline',
       'Your quiz is completed and saved on this device. Open Sync Center when you are back near the hub.',
       [{ text: 'Go to Sync Center', onPress: () => router.replace('/student/sync') }]
     );
@@ -110,21 +112,25 @@ export default function Quiz() {
 
   if (!assignment) {
     return (
-      <Screen>
-        <EmptyState icon="📝" title="Quiz not found" message="Pull lessons again from the hub." />
+      <Screen header={<AppBar title="Quiz" role="student" back />}>
+        <EmptyState icon="quiz" title="Quiz not found" message="Pull lessons again from the hub." />
       </Screen>
     );
   }
 
+  const total = assignment.quiz.questions.length;
   const answered = answeredCount(buildAnswers());
 
   return (
-    <Screen>
+    <Screen header={<AppBar title="Quiz" role="student" back />}>
       <AppCard accent={colors.blue}>
         <Text style={styles.title}>{assignment.title}</Text>
         <Text style={styles.progress}>
-          {answered} / {assignment.quiz.questions.length} answered · works fully offline
+          {answered} / {total} answered · works fully offline
         </Text>
+        <View style={styles.bar}>
+          <ProgressBar value={total ? answered / total : 0} color={colors.blue} />
+        </View>
       </AppCard>
 
       {assignment.quiz.questions.map((q, i) => (
@@ -138,16 +144,17 @@ export default function Quiz() {
       ))}
 
       <View style={styles.actions}>
-        <AppButton title="Save Draft" icon="💾" variant="ghost" onPress={saveDraft} loading={saving} style={styles.btn} />
-        <AppButton title="Submit Offline" icon="✅" variant="success" onPress={submit} loading={saving} style={styles.btn} />
+        <AppButton title="Save Draft" icon="save" variant="ghost" onPress={saveDraft} loading={saving} style={styles.btn} />
+        <AppButton title="Submit Offline" icon="check" variant="success" onPress={submit} loading={saving} style={styles.btn} />
       </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  title: { fontSize: 18, fontWeight: '800', color: colors.text },
-  progress: { fontSize: 13, color: colors.textMuted, marginTop: spacing.xs },
+  title: { fontFamily: fonts.extrabold, fontSize: 18, color: colors.text },
+  progress: { fontFamily: fonts.medium, fontSize: 13, color: colors.textMuted, marginTop: spacing.xs },
+  bar: { marginTop: spacing.md },
   actions: { flexDirection: 'row', gap: spacing.md, marginTop: spacing.sm },
   btn: { flex: 1 },
 });

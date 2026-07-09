@@ -1,7 +1,9 @@
 import React from 'react';
 import { Pressable, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Icon } from './Icon';
 import { colors } from '../theme/colors';
-import { radius, spacing } from '../theme/spacing';
+import { fonts } from '../theme/typography';
+import { radius, spacing, shadow } from '../theme/spacing';
 import { QuizQuestion as QuizQuestionType } from '../types/quiz';
 
 interface Props {
@@ -11,7 +13,10 @@ interface Props {
   onChange: (value: string) => void;
 }
 
+const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
+
 export function QuizQuestion({ index, question, value, onChange }: Props) {
+  const mc = question.type === 'multiple_choice';
   return (
     <View style={styles.wrap}>
       <View style={styles.headerRow}>
@@ -19,13 +24,12 @@ export function QuizQuestion({ index, question, value, onChange }: Props) {
           <Text style={styles.badgeText}>{index + 1}</Text>
         </View>
         <Text style={styles.marks}>
-          {question.marks} mark{question.marks === 1 ? '' : 's'} ·{' '}
-          {question.type === 'multiple_choice' ? 'Multiple choice' : 'Short answer'}
+          {question.marks} mark{question.marks === 1 ? '' : 's'} · {mc ? 'Multiple choice' : 'Short answer'}
         </Text>
       </View>
       <Text style={styles.question}>{question.question}</Text>
 
-      {question.type === 'multiple_choice' ? (
+      {mc ? (
         <View style={styles.options}>
           {question.options.map((opt, i) => {
             const selected = value === opt;
@@ -35,8 +39,12 @@ export function QuizQuestion({ index, question, value, onChange }: Props) {
                 onPress={() => onChange(opt)}
                 style={[styles.option, selected && styles.optionSelected]}
               >
-                <View style={[styles.radio, selected && styles.radioSelected]}>
-                  {selected ? <View style={styles.radioDot} /> : null}
+                <View style={[styles.letter, selected && styles.letterSelected]}>
+                  {selected ? (
+                    <Icon name="check" size={16} color={colors.textInverse} />
+                  ) : (
+                    <Text style={styles.letterText}>{LETTERS[i] ?? i + 1}</Text>
+                  )}
                 </View>
                 <Text style={[styles.optionText, selected && styles.optionTextSelected]}>{opt}</Text>
               </Pressable>
@@ -49,7 +57,7 @@ export function QuizQuestion({ index, question, value, onChange }: Props) {
           value={value}
           onChangeText={onChange}
           placeholder="Type your answer…"
-          placeholderTextColor={colors.textMuted}
+          placeholderTextColor={colors.textFaint}
           multiline
         />
       )}
@@ -65,53 +73,54 @@ const styles = StyleSheet.create({
     marginBottom: spacing.md,
     borderWidth: 1,
     borderColor: colors.border,
+    ...shadow.card,
   },
-  headerRow: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.sm },
+  headerRow: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md, gap: spacing.sm },
   badge: {
-    width: 26,
-    height: 26,
-    borderRadius: 13,
-    backgroundColor: colors.blue,
+    width: 28,
+    height: 28,
+    borderRadius: 9,
+    backgroundColor: colors.navy,
     alignItems: 'center',
     justifyContent: 'center',
-    marginRight: spacing.sm,
   },
-  badgeText: { color: colors.textInverse, fontWeight: '800', fontSize: 13 },
-  marks: { fontSize: 12, color: colors.textMuted, fontWeight: '600' },
-  question: { fontSize: 16, fontWeight: '600', color: colors.text, marginBottom: spacing.md, lineHeight: 22 },
+  badgeText: { color: colors.textInverse, fontFamily: fonts.extrabold, fontSize: 13 },
+  marks: { fontFamily: fonts.medium, fontSize: 12, color: colors.textMuted },
+  question: { fontFamily: fonts.semibold, fontSize: 16, color: colors.text, marginBottom: spacing.md, lineHeight: 23 },
   options: { gap: spacing.sm },
   option: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: colors.border,
+    borderColor: colors.outlineVariant,
     borderRadius: radius.md,
     padding: spacing.md,
-    marginBottom: spacing.sm,
+    gap: spacing.md,
   },
   optionSelected: { borderColor: colors.blue, backgroundColor: colors.blueSoft },
-  radio: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
-    borderWidth: 2,
-    borderColor: colors.textMuted,
-    marginRight: spacing.md,
+  letter: {
+    width: 28,
+    height: 28,
+    borderRadius: 8,
+    borderWidth: 1.5,
+    borderColor: colors.outlineVariant,
+    backgroundColor: colors.card,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  radioSelected: { borderColor: colors.blue },
-  radioDot: { width: 10, height: 10, borderRadius: 5, backgroundColor: colors.blue },
-  optionText: { fontSize: 15, color: colors.text, flex: 1 },
-  optionTextSelected: { fontWeight: '700', color: colors.navy },
+  letterSelected: { borderColor: colors.blue, backgroundColor: colors.blue },
+  letterText: { fontFamily: fonts.bold, fontSize: 13, color: colors.textMuted },
+  optionText: { fontFamily: fonts.medium, fontSize: 15, color: colors.text, flex: 1 },
+  optionTextSelected: { fontFamily: fonts.semibold, color: colors.navy },
   input: {
     borderWidth: 1.5,
-    borderColor: colors.border,
+    borderColor: colors.outlineVariant,
     borderRadius: radius.md,
     padding: spacing.md,
+    fontFamily: fonts.medium,
     fontSize: 15,
     color: colors.text,
-    minHeight: 90,
+    minHeight: 96,
     textAlignVertical: 'top',
   },
 });

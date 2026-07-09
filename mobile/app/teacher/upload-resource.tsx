@@ -3,12 +3,14 @@ import { Alert, StyleSheet, Text, View } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
 import { router } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
+import { AppBar } from '../../src/components/AppBar';
 import { AppCard } from '../../src/components/AppCard';
 import { AppButton } from '../../src/components/AppButton';
 import { TextField } from '../../src/components/TextField';
-import { useAuthStore } from '../../src/state/useAuthStore';
 import { colors } from '../../src/theme/colors';
+import { fonts } from '../../src/theme/typography';
 import { spacing } from '../../src/theme/spacing';
+import { useAuthStore } from '../../src/state/useAuthStore';
 
 export default function UploadResource() {
   const user = useAuthStore((s) => s.user);
@@ -42,7 +44,6 @@ export default function UploadResource() {
     setUploading(true);
     try {
       const form = new FormData();
-      // React Native FormData file shape:
       form.append('file', {
         uri: file.uri,
         name: file.name,
@@ -60,7 +61,7 @@ export default function UploadResource() {
         const text = await res.text();
         throw new Error(text || `Upload failed (${res.status})`);
       }
-      Alert.alert('Uploaded ✅', 'Resource added to the hub library.');
+      Alert.alert('Uploaded', 'Resource added to the hub library.');
       router.back();
     } catch (err) {
       Alert.alert('Upload failed', (err as Error).message);
@@ -69,27 +70,45 @@ export default function UploadResource() {
   };
 
   return (
-    <Screen>
+    <Screen header={<AppBar title="Upload Resource" role="teacher" back />}>
       <AppCard>
         <Text style={styles.title}>Upload a text lesson</Text>
-        <Text style={styles.hint}>
-          For the MVP, plain text (.txt) files work best. PDF/video are planned.
-        </Text>
+        <Text style={styles.hint}>For the MVP, plain text (.txt) files work best. PDF/video are planned.</Text>
 
-        <AppButton title={file ? `📄 ${file.name}` : 'Choose File'} icon={file ? undefined : '📁'} variant="secondary" onPress={pick} />
+        <AppButton
+          title={file ? file.name : 'Choose File'}
+          icon={file ? 'check' : 'resource'}
+          variant="secondary"
+          accent={colors.navy}
+          onPress={pick}
+        />
 
         <View style={{ height: spacing.lg }} />
-        <TextField label="Title" value={title} onChangeText={setTitle} placeholder="e.g. Photosynthesis Notes" />
-        <TextField label="Subject" value={subject} onChangeText={setSubject} placeholder="e.g. Basic Science" />
-        <TextField label="Level" value={level} onChangeText={setLevel} placeholder="e.g. JSS2" autoCapitalize="characters" />
+        <TextField label="Title" value={title} onChangeText={setTitle} placeholder="e.g. Photosynthesis Notes" accent={colors.navy} />
+        <TextField label="Subject" value={subject} onChangeText={setSubject} placeholder="e.g. Basic Science" accent={colors.navy} />
+        <TextField
+          label="Level"
+          value={level}
+          onChangeText={setLevel}
+          placeholder="e.g. JSS2"
+          autoCapitalize="characters"
+          accent={colors.navy}
+        />
 
-        <AppButton title="Upload to Hub" icon="📤" onPress={upload} loading={uploading} style={{ marginTop: spacing.sm }} />
+        <AppButton
+          title="Upload to Hub"
+          icon="upload"
+          accent={colors.navy}
+          onPress={upload}
+          loading={uploading}
+          style={{ marginTop: spacing.sm }}
+        />
       </AppCard>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  title: { fontSize: 18, fontWeight: '800', color: colors.text, marginBottom: spacing.xs },
-  hint: { fontSize: 13, color: colors.textMuted, marginBottom: spacing.md, lineHeight: 18 },
+  title: { fontFamily: fonts.extrabold, fontSize: 18, color: colors.text, marginBottom: spacing.xs },
+  hint: { fontFamily: fonts.regular, fontSize: 13, color: colors.textMuted, marginBottom: spacing.md, lineHeight: 18 },
 });

@@ -1,8 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { AppCard } from './AppCard';
+import { Icon } from './Icon';
 import { colors } from '../theme/colors';
-import { spacing } from '../theme/spacing';
+import { fonts } from '../theme/typography';
+import { radius, spacing } from '../theme/spacing';
 
 interface Props {
   title: string;
@@ -26,7 +28,9 @@ export function AssignmentCard({
   return (
     <AppCard onPress={onPress} accent={accent}>
       <View style={styles.headerRow}>
-        <Text style={styles.icon}>📝</Text>
+        <View style={[styles.iconTile, { backgroundColor: colors.blueSoft }]}>
+          <Icon name="quiz" size={20} color={colors.blue} />
+        </View>
         <View style={styles.flex}>
           <Text style={styles.title}>{title}</Text>
           <Text style={styles.meta}>
@@ -46,11 +50,11 @@ export function AssignmentCard({
 }
 
 const styles = StyleSheet.create({
-  headerRow: { flexDirection: 'row', alignItems: 'center' },
+  headerRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   flex: { flex: 1 },
-  icon: { fontSize: 22, marginRight: spacing.md },
-  title: { fontSize: 16, fontWeight: '700', color: colors.text },
-  meta: { fontSize: 13, color: colors.textMuted, marginTop: 2 },
-  instructions: { fontSize: 14, color: colors.text, marginTop: spacing.sm, lineHeight: 20 },
+  iconTile: { width: 44, height: 44, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
+  title: { fontFamily: fonts.bold, fontSize: 16, color: colors.text },
+  meta: { fontFamily: fonts.regular, fontSize: 13, color: colors.textMuted, marginTop: 2 },
+  instructions: { fontFamily: fonts.regular, fontSize: 14, color: colors.textMuted, marginTop: spacing.md, lineHeight: 20 },
   footer: { marginTop: spacing.md },
 });

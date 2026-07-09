@@ -2,13 +2,15 @@ import React, { useCallback, useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
+import { AppBar } from '../../src/components/AppBar';
 import { AppCard } from '../../src/components/AppCard';
 import { AppButton } from '../../src/components/AppButton';
 import { EmptyState } from '../../src/components/EmptyState';
 import { useAuthStore } from '../../src/state/useAuthStore';
 import { api } from '../../src/services/apiClient';
 import { colors } from '../../src/theme/colors';
-import { spacing } from '../../src/theme/spacing';
+import { fonts } from '../../src/theme/typography';
+import { spacing, radius } from '../../src/theme/spacing';
 
 interface ClassRow {
   id: string;
@@ -59,30 +61,33 @@ export default function Insights() {
   };
 
   return (
-    <Screen>
+    <Screen header={<AppBar title="AI Insights" role="teacher" back />}>
       {classes.length > 1 ? (
         <View style={styles.chips}>
-          {classes.map((c) => (
-            <Pressable
-              key={c.id}
-              onPress={() => {
-                setClassroomId(c.id);
-                setInsight(null);
-              }}
-              style={[styles.chip, classroomId === c.id && styles.chipActive]}
-            >
-              <Text style={[styles.chipText, classroomId === c.id && styles.chipTextActive]}>{c.name}</Text>
-            </Pressable>
-          ))}
+          {classes.map((c) => {
+            const active = classroomId === c.id;
+            return (
+              <Pressable
+                key={c.id}
+                onPress={() => {
+                  setClassroomId(c.id);
+                  setInsight(null);
+                }}
+                style={[styles.chip, active && styles.chipActive]}
+              >
+                <Text style={[styles.chipText, active && styles.chipTextActive]}>{c.name}</Text>
+              </Pressable>
+            );
+          })}
         </View>
       ) : null}
 
-      <AppButton title="Generate with Gemma" icon="🧠" onPress={generate} loading={loading} />
+      <AppButton title="Generate with Gemma" icon="ai" accent={colors.navy} onPress={generate} loading={loading} />
 
       {!insight ? (
         <View style={{ marginTop: spacing.lg }}>
           <EmptyState
-            icon="🧠"
+            icon="insight"
             title="AI class insights"
             message="Tap the button to have Gemma analyse student submissions and suggest what to reteach."
           />
@@ -95,7 +100,7 @@ export default function Insights() {
           </AppCard>
 
           <AppCard accent={colors.warning}>
-            <Text style={styles.sectionTitle}>Common Misconceptions</Text>
+            <Text style={styles.sectionTitle}>Common misconceptions</Text>
             {insight.commonMisconceptions.length === 0 ? (
               <Text style={styles.body}>None detected 🎉</Text>
             ) : (
@@ -108,12 +113,12 @@ export default function Insights() {
           </AppCard>
 
           <AppCard accent={colors.success}>
-            <Text style={styles.sectionTitle}>Recommended Revision</Text>
+            <Text style={styles.sectionTitle}>Recommended revision</Text>
             <Text style={styles.body}>{insight.recommendedRevision}</Text>
           </AppCard>
 
           <AppCard accent={colors.navy}>
-            <Text style={styles.sectionTitle}>Suggested Next Activity</Text>
+            <Text style={styles.sectionTitle}>Suggested next activity</Text>
             <Text style={styles.body}>{insight.nextActivity}</Text>
           </AppCard>
         </View>
@@ -126,15 +131,16 @@ const styles = StyleSheet.create({
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginBottom: spacing.md },
   chip: {
     borderWidth: 1.5,
-    borderColor: colors.border,
-    borderRadius: 999,
+    borderColor: colors.outlineVariant,
+    borderRadius: radius.pill,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
+    backgroundColor: colors.card,
   },
-  chipActive: { borderColor: colors.blue, backgroundColor: colors.blueSoft },
-  chipText: { fontSize: 13, color: colors.text, fontWeight: '600' },
-  chipTextActive: { color: colors.navy, fontWeight: '800' },
-  sectionTitle: { fontSize: 15, fontWeight: '800', color: colors.text, marginBottom: spacing.sm },
-  body: { fontSize: 14, color: colors.text, lineHeight: 21 },
-  bullet: { fontSize: 14, color: colors.text, lineHeight: 22 },
+  chipActive: { borderColor: colors.navy, backgroundColor: colors.navySoft },
+  chipText: { fontFamily: fonts.semibold, fontSize: 13, color: colors.textMuted },
+  chipTextActive: { fontFamily: fonts.bold, color: colors.navy },
+  sectionTitle: { fontFamily: fonts.extrabold, fontSize: 15, color: colors.text, marginBottom: spacing.sm },
+  body: { fontFamily: fonts.regular, fontSize: 14, color: colors.text, lineHeight: 21 },
+  bullet: { fontFamily: fonts.regular, fontSize: 14, color: colors.text, lineHeight: 22 },
 });

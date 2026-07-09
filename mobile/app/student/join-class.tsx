@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Alert, StyleSheet, Text } from 'react-native';
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
+import { AppBar } from '../../src/components/AppBar';
 import { AppCard } from '../../src/components/AppCard';
 import { AppButton } from '../../src/components/AppButton';
 import { TextField } from '../../src/components/TextField';
@@ -14,11 +15,13 @@ import { colors } from '../../src/theme/colors';
 import { spacing } from '../../src/theme/spacing';
 
 export default function JoinClass() {
+  // hubUrl/code may arrive pre-filled from the QR scanner (scan-join screen).
+  const params = useLocalSearchParams<{ hubUrl?: string; code?: string }>();
   const { user, updateHubUrl, updateName, refresh } = useAuthStore();
   const { pull } = useSyncStore();
   const [name, setName] = useState(user?.name ?? '');
-  const [hubUrl, setHubUrl] = useState(user?.hubUrl ?? '');
-  const [code, setCode] = useState('');
+  const [hubUrl, setHubUrl] = useState(params.hubUrl ?? user?.hubUrl ?? '');
+  const [code, setCode] = useState(params.code ?? '');
   const [joining, setJoining] = useState(false);
 
   const join = async () => {
@@ -60,10 +63,18 @@ export default function JoinClass() {
   };
 
   return (
-    <Screen>
+    <Screen header={<AppBar title="Join a Class" role="student" back />}>
       <AppCard>
         <Text style={styles.title}>Join your class</Text>
-        <Text style={styles.hint}>Enter the code your teacher gave you while on the same Wi-Fi/hotspot as the hub.</Text>
+        <Text style={styles.hint}>Scan your teacher's QR code, or enter the code manually. Stay on the same Wi-Fi/hotspot as the hub.</Text>
+
+        <AppButton
+          title="Scan QR Code"
+          icon="scan"
+          variant="secondary"
+          onPress={() => router.push('/student/scan-join')}
+          style={styles.scanBtn}
+        />
 
         <TextField label="Your name" value={name} onChangeText={setName} placeholder="e.g. Ada" autoCapitalize="words" />
         <HubUrlInput value={hubUrl} onChangeText={setHubUrl} />
@@ -74,7 +85,7 @@ export default function JoinClass() {
           placeholder="e.g. JSS2-4821"
           autoCapitalize="characters"
         />
-        <AppButton title="Join Class" icon="🚪" onPress={join} loading={joining} />
+        <AppButton title="Join Class" icon="school" onPress={join} loading={joining} />
       </AppCard>
     </Screen>
   );
@@ -83,4 +94,5 @@ export default function JoinClass() {
 const styles = StyleSheet.create({
   title: { fontSize: 20, fontWeight: '800', color: colors.text, marginBottom: spacing.xs },
   hint: { fontSize: 13, color: colors.textMuted, marginBottom: spacing.lg, lineHeight: 18 },
+  scanBtn: { marginBottom: spacing.lg },
 });

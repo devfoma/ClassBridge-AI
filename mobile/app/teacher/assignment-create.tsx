@@ -2,15 +2,18 @@ import React, { useCallback, useState } from 'react';
 import { Alert, Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
+import { AppBar } from '../../src/components/AppBar';
 import { AppCard } from '../../src/components/AppCard';
 import { AppButton } from '../../src/components/AppButton';
 import { TextField } from '../../src/components/TextField';
+import { Icon } from '../../src/components/Icon';
 import { useAuthStore } from '../../src/state/useAuthStore';
 import { api } from '../../src/services/apiClient';
 import { ResourcePublic } from '../../src/types/resource';
 import { QuizQuestion } from '../../src/types/quiz';
 import { colors } from '../../src/theme/colors';
-import { spacing } from '../../src/theme/spacing';
+import { fonts } from '../../src/theme/typography';
+import { spacing, radius } from '../../src/theme/spacing';
 
 interface ClassRow {
   id: string;
@@ -100,7 +103,7 @@ export default function AssignmentCreate() {
         quiz: { questions },
         publish: true,
       });
-      Alert.alert('Published ✅', 'Students can now download this assignment.');
+      Alert.alert('Published', 'Students can now download this assignment.');
       router.replace('/teacher/dashboard');
     } catch (err) {
       Alert.alert('Publish failed', (err as Error).message);
@@ -109,12 +112,12 @@ export default function AssignmentCreate() {
   };
 
   return (
-    <Screen>
+    <Screen header={<AppBar title="Create Assignment" role="teacher" back />}>
       <AppCard>
         <Text style={styles.step}>1 · Classroom</Text>
         <View style={styles.chips}>
           {classes.map((c) => (
-            <Chip key={c.id} label={c.name} active={classroomId === c.id} onPress={() => setClassroomId(c.id)} />
+            <SelectChip key={c.id} label={c.name} active={classroomId === c.id} onPress={() => setClassroomId(c.id)} />
           ))}
           {classes.length === 0 ? <Text style={styles.muted}>No classrooms yet — create one first.</Text> : null}
         </View>
@@ -124,7 +127,7 @@ export default function AssignmentCreate() {
         <Text style={styles.step}>2 · Lesson resource</Text>
         <View style={styles.chips}>
           {resources.map((r) => (
-            <Chip key={r.id} label={r.title} active={resourceId === r.id} onPress={() => setResourceId(r.id)} />
+            <SelectChip key={r.id} label={r.title} active={resourceId === r.id} onPress={() => setResourceId(r.id)} />
           ))}
           {resources.length === 0 ? <Text style={styles.muted}>No resources yet — import a pack in Library.</Text> : null}
         </View>
@@ -132,10 +135,11 @@ export default function AssignmentCreate() {
 
       <AppCard>
         <Text style={styles.step}>3 · Generate quiz</Text>
-        <AppButton title="Generate with Gemma" icon="🧠" onPress={generateQuiz} loading={generating} />
+        <AppButton title="Generate with Gemma" icon="ai" accent={colors.navy} onPress={generateQuiz} loading={generating} />
         {questions ? (
           <View style={styles.reviewBanner}>
-            <Text style={styles.reviewText}>⚠️ Teacher Review Required — check the AI questions before publishing.</Text>
+            <Icon name="warning" size={16} color={colors.warning} />
+            <Text style={styles.reviewText}>Teacher review required — check the AI questions before publishing.</Text>
           </View>
         ) : null}
       </AppCard>
@@ -148,17 +152,21 @@ export default function AssignmentCreate() {
                   Q{i + 1} · {q.type === 'multiple_choice' ? 'Multiple choice' : 'Short answer'} · {q.marks} mark
                   {q.marks === 1 ? '' : 's'}
                 </Text>
-                <Pressable onPress={() => removeQuestion(q.id)}>
+                <Pressable onPress={() => removeQuestion(q.id)} hitSlop={8}>
                   <Text style={styles.remove}>Remove</Text>
                 </Pressable>
               </View>
               <Text style={styles.qText}>{q.question}</Text>
               {q.type === 'multiple_choice' ? (
                 q.options.map((o, oi) => (
-                  <Text key={oi} style={[styles.option, o === q.answer && styles.optionCorrect]}>
-                    {o === q.answer ? '✓ ' : '• '}
-                    {o}
-                  </Text>
+                  <View key={oi} style={styles.optionRow}>
+                    <Icon
+                      name={o === q.answer ? 'check' : 'chevron'}
+                      size={15}
+                      color={o === q.answer ? colors.success : colors.outlineVariant}
+                    />
+                    <Text style={[styles.option, o === q.answer && styles.optionCorrect]}>{o}</Text>
+                  </View>
                 ))
               ) : (
                 <Text style={styles.answer}>Model answer: {q.answer}</Text>
@@ -170,16 +178,16 @@ export default function AssignmentCreate() {
       {questions ? (
         <AppCard>
           <Text style={styles.step}>4 · Details & publish</Text>
-          <TextField label="Title" value={title} onChangeText={setTitle} placeholder="Assignment title" />
-          <TextField label="Instructions" value={instructions} onChangeText={setInstructions} multiline />
-          <AppButton title="Publish Assignment" icon="🚀" variant="success" onPress={publish} loading={publishing} />
+          <TextField label="Title" value={title} onChangeText={setTitle} placeholder="Assignment title" accent={colors.navy} />
+          <TextField label="Instructions" value={instructions} onChangeText={setInstructions} multiline accent={colors.navy} />
+          <AppButton title="Publish Assignment" icon="publish" variant="success" onPress={publish} loading={publishing} />
         </AppCard>
       ) : null}
     </Screen>
   );
 }
 
-function Chip({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
+function SelectChip({ label, active, onPress }: { label: string; active: boolean; onPress: () => void }) {
   return (
     <Pressable onPress={onPress} style={[styles.chip, active && styles.chipActive]}>
       <Text style={[styles.chipText, active && styles.chipTextActive]}>{label}</Text>
@@ -188,32 +196,36 @@ function Chip({ label, active, onPress }: { label: string; active: boolean; onPr
 }
 
 const styles = StyleSheet.create({
-  step: { fontSize: 15, fontWeight: '800', color: colors.navy, marginBottom: spacing.md },
+  step: { fontFamily: fonts.extrabold, fontSize: 15, color: colors.navy, marginBottom: spacing.md },
   chips: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
   chip: {
     borderWidth: 1.5,
-    borderColor: colors.border,
-    borderRadius: 999,
+    borderColor: colors.outlineVariant,
+    borderRadius: radius.pill,
     paddingHorizontal: spacing.md,
     paddingVertical: spacing.sm,
-    marginBottom: spacing.sm,
+    backgroundColor: colors.card,
   },
-  chipActive: { borderColor: colors.blue, backgroundColor: colors.blueSoft },
-  chipText: { fontSize: 14, color: colors.text, fontWeight: '600' },
-  chipTextActive: { color: colors.navy, fontWeight: '800' },
-  muted: { fontSize: 13, color: colors.textMuted },
+  chipActive: { borderColor: colors.navy, backgroundColor: colors.navySoft },
+  chipText: { fontFamily: fonts.semibold, fontSize: 14, color: colors.textMuted },
+  chipTextActive: { fontFamily: fonts.bold, color: colors.navy },
+  muted: { fontFamily: fonts.regular, fontSize: 13, color: colors.textMuted },
   reviewBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
     backgroundColor: colors.warningSoft,
-    borderRadius: 10,
+    borderRadius: radius.md,
     padding: spacing.md,
     marginTop: spacing.md,
   },
-  reviewText: { fontSize: 13, color: colors.warning, fontWeight: '700' },
+  reviewText: { flex: 1, fontFamily: fonts.semibold, fontSize: 13, color: colors.warning, lineHeight: 18 },
   qHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: spacing.sm },
-  qType: { fontSize: 12, fontWeight: '700', color: colors.textMuted },
-  remove: { fontSize: 13, color: colors.danger, fontWeight: '700' },
-  qText: { fontSize: 15, fontWeight: '600', color: colors.text, marginBottom: spacing.sm, lineHeight: 21 },
-  option: { fontSize: 14, color: colors.text, paddingVertical: 3 },
-  optionCorrect: { color: colors.success, fontWeight: '700' },
-  answer: { fontSize: 14, color: colors.textMuted, fontStyle: 'italic', marginTop: spacing.xs },
+  qType: { fontFamily: fonts.bold, fontSize: 12, color: colors.textMuted },
+  remove: { fontFamily: fonts.bold, fontSize: 13, color: colors.danger },
+  qText: { fontFamily: fonts.semibold, fontSize: 15, color: colors.text, marginBottom: spacing.sm, lineHeight: 21 },
+  optionRow: { flexDirection: 'row', alignItems: 'center', gap: 6, paddingVertical: 3 },
+  option: { fontFamily: fonts.regular, fontSize: 14, color: colors.text, flex: 1 },
+  optionCorrect: { fontFamily: fonts.bold, color: colors.success },
+  answer: { fontFamily: fonts.regular, fontSize: 14, color: colors.textMuted, fontStyle: 'italic', marginTop: spacing.xs },
 });

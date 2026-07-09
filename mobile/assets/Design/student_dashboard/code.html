@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ClassBridge AI - Student Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#1a1c1e",
+                    "on-tertiary-fixed-variant": "#76321a",
+                    "on-secondary-fixed": "#001a41",
+                    "outline-variant": "#c5c6d1",
+                    "on-secondary": "#ffffff",
+                    "on-tertiary-container": "#cc7658",
+                    "background": "#f9f9fc",
+                    "outline": "#757681",
+                    "primary-fixed": "#dae1ff",
+                    "on-surface-variant": "#444650",
+                    "on-primary-container": "#748bcd",
+                    "inverse-primary": "#b3c5ff",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary-fixed-variant": "#004493",
+                    "secondary-fixed": "#d8e2ff",
+                    "surface-variant": "#e2e2e5",
+                    "on-error-container": "#93000a",
+                    "surface": "#f9f9fc",
+                    "secondary-fixed-dim": "#adc7ff",
+                    "surface-container-low": "#f3f3f6",
+                    "inverse-surface": "#2f3133",
+                    "error-container": "#ffdad6",
+                    "surface-container-highest": "#e2e2e5",
+                    "inverse-on-surface": "#f0f0f3",
+                    "on-primary-fixed-variant": "#2c4481",
+                    "secondary-container": "#0070ea",
+                    "on-background": "#1a1c1e",
+                    "on-primary": "#ffffff",
+                    "surface-container-lowest": "#ffffff",
+                    "secondary": "#0059bb",
+                    "primary-fixed-dim": "#b3c5ff",
+                    "surface-tint": "#455c9a",
+                    "on-secondary-container": "#fefcff",
+                    "tertiary-fixed-dim": "#ffb59d",
+                    "surface-container-high": "#e8e8ea",
+                    "tertiary-container": "#4a1200",
+                    "on-primary-fixed": "#001849",
+                    "primary-container": "#00215e",
+                    "tertiary": "#260600",
+                    "tertiary-fixed": "#ffdbd0",
+                    "surface-dim": "#dadadc",
+                    "error": "#ba1a1a",
+                    "surface-container": "#eeeef0",
+                    "surface-bright": "#f9f9fc",
+                    "on-error": "#ffffff",
+                    "primary": "#000e32",
+                    "on-tertiary-fixed": "#390c00"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px",
+                    "card": "24px"
+            },
+            "spacing": {
+                    "safe-area": "1rem",
+                    "stack-lg": "1.5rem",
+                    "stack-sm": "0.5rem",
+                    "stack-md": "1rem",
+                    "gutter-mobile": "1rem",
+                    "margin-mobile": "1.25rem"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-lg-mobile": ["Inter"],
+                    "label-sm": ["Inter"],
+                    "headline-lg": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "label-md": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-lg-mobile": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "label-sm": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.01em", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        .stagger-1 { animation-delay: 0.1s; }
+        .stagger-2 { animation-delay: 0.2s; }
+        .stagger-3 { animation-delay: 0.3s; }
+        .stagger-4 { animation-delay: 0.4s; }
+        .stagger-5 { animation-delay: 0.5s; }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .bg-soft-gradient {
+            background: linear-gradient(135deg, #f9f9fc 0%, #e2e8f0 100%);
+        }
+
+        .custom-shadow {
+            box-shadow: 0 4px 20px -2px rgba(0, 14, 50, 0.05);
+        }
+
+        .accent-bar {
+            width: 4px;
+            height: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+            border-top-left-radius: 24px;
+            border-bottom-left-radius: 24px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md min-h-screen pb-24 overflow-x-hidden">
+<!-- Top AppBar -->
+<header class="fixed top-0 w-full z-50 bg-surface flex items-center justify-between px-margin-mobile h-16 w-full border-b border-outline-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">signal_wifi_off</span>
+<h1 class="font-headline-md text-headline-md-mobile font-bold text-primary">ClassBridge AI</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors duration-200">
+<span class="material-symbols-outlined text-on-surface-variant">sync</span>
+</button>
+</header>
+<main class="pt-20 px-margin-mobile max-w-2xl mx-auto space-y-stack-lg">
+<!-- Welcome Header -->
+<section class="animate-fade-in-up stagger-1">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-primary">Hello, Alex Rivera</h2>
+<p class="text-on-surface-variant font-body-md mt-1">Ready for your Newton's Laws deep dive?</p>
+</section>
+<!-- Next Lesson (Bento-style primary card) -->
+<section class="animate-fade-in-up stagger-2">
+<div class="relative bg-white rounded-card custom-shadow p-6 overflow-hidden">
+<div class="accent-bar bg-secondary"></div>
+<div class="flex justify-between items-start mb-4">
+<div class="flex flex-col gap-1">
+<span class="text-secondary font-label-sm uppercase tracking-wider">UP NEXT</span>
+<h3 class="font-headline-md text-primary">Physics: Newton's Laws</h3>
+</div>
+<div class="w-12 h-12 rounded-2xl bg-secondary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">rocket_launch</span>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex justify-between text-label-md font-label-md text-on-surface-variant">
+<span>Course Progress</span>
+<span>65%</span>
+</div>
+<div class="w-full h-3 bg-surface-container rounded-full overflow-hidden">
+<div class="h-full bg-secondary w-[65%] rounded-full transition-all duration-1000"></div>
+</div>
+</div>
+<button class="mt-6 w-full bg-secondary text-on-secondary font-label-md py-4 rounded-card flex items-center justify-center gap-2 active:scale-95 transition-transform duration-150">
+<span>Continue Lesson</span>
+<span class="material-symbols-outlined text-[18px]">play_circle</span>
+</button>
+</div>
+</section>
+<!-- Offline Resources Grid -->
+<section class="animate-fade-in-up stagger-3 space-y-stack-md">
+<h3 class="font-label-md text-primary uppercase tracking-widest px-1">Offline Access</h3>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-white p-4 rounded-card custom-shadow border border-outline-variant flex flex-col items-center justify-center text-center gap-2 aspect-square group cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="w-14 h-14 rounded-full bg-tertiary-fixed flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-on-tertiary-fixed-variant" style="font-variation-settings: 'FILL' 1;">offline_pin</span>
+</div>
+<span class="font-label-md text-primary">Saved Lessons</span>
+<span class="text-[10px] text-on-surface-variant">12 files ready</span>
+</div>
+<div class="bg-white p-4 rounded-card custom-shadow border border-outline-variant flex flex-col items-center justify-center text-center gap-2 aspect-square group cursor-pointer hover:bg-surface-container-low transition-colors">
+<div class="w-14 h-14 rounded-full bg-secondary-fixed flex items-center justify-center group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-secondary" style="font-variation-settings: 'FILL' 1;">quiz</span>
+</div>
+<span class="font-label-md text-primary">Pending Quizzes</span>
+<span class="text-[10px] text-on-surface-variant">3 due tomorrow</span>
+</div>
+</div>
+</section>
+<!-- My Classes Section -->
+<section class="animate-fade-in-up stagger-4 space-y-stack-md">
+<div class="flex items-center justify-between px-1">
+<h3 class="font-label-md text-primary uppercase tracking-widest">My Classes</h3>
+<button class="text-secondary text-label-md font-semibold">View All</button>
+</div>
+<div class="space-y-4">
+<!-- Class Card 1 -->
+<div class="glass-card rounded-card p-4 flex items-center gap-4 relative overflow-hidden group">
+<div class="w-16 h-16 rounded-2xl bg-primary-fixed overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist 3D isometric icon representing mathematics with geometric shapes and a compass tool. Soft lighting on a light background, navy and azure color scheme to match ClassBridge AI branding." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDYbU_H8GR5AqXcm_WxyEiAVNt_Pt9EW7bvRX83Yv0BFqY_V1IFdNds8q6lYgXL8m7I5JRAt3uyMndP9Gwdi4zk0FdnXYtK1yPZryDIcpETOvObW3GOIBTT_S1ycXEoB5tiF9870P6573wvnHh5J67RzQad0oCyJ_mY-icmEJo9S-Uf8BXnhVzdq_lUR5dIOEuffwNWL5EVvZM4OTEEgcR79_qV2JKo_yUWguOG6D1srb8DU9vxhTHbrjoW7R6pPxRvKV6PTTxBlBsz"/>
+</div>
+<div class="flex-grow">
+<h4 class="font-body-lg font-bold text-primary">Advanced Math</h4>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-label-sm bg-surface-container px-2 py-0.5 rounded-full text-on-surface-variant">MATH-402</span>
+<span class="text-label-sm text-on-surface-variant">• Dr. Sarah Chen</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-secondary transition-colors">chevron_right</span>
+</div>
+<!-- Class Card 2 -->
+<div class="glass-card rounded-card p-4 flex items-center gap-4 relative overflow-hidden group">
+<div class="w-16 h-16 rounded-2xl bg-secondary-fixed overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist 3D isometric icon representing biology and genetics with a stylized DNA double helix. Soft lighting on a light background, vibrant azure and navy blue color palette to maintain the educational app's high-trust aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA2obpl9dt09k6UuC0t1qRA-hO8ielXGpZr34SB4cHp-cK1eCJWMhR6Kc2FpjLdDwDGtkpAWiT_KO6YrUTjhSGmkkDIwDaQNM0CGSrt60nK1vLetyQqsAkfWIdexJV8tTpcjCcKbD4Nglq0YbILlb33pk2t0GmKt8mfOS0bOAmRsv9mAXUsjalYAG6vZb-IzJfz4XngFXLItADMYpOBzWpynDbv2Ilrvm7Xw4i7Ffskcp6gr4YuYUNzhxe9wRW5BCOZMFx0AwnCkjjU"/>
+</div>
+<div class="flex-grow">
+<h4 class="font-body-lg font-bold text-primary">Biology 101</h4>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-label-sm bg-surface-container px-2 py-0.5 rounded-full text-on-surface-variant">BIO-101</span>
+<span class="text-label-sm text-on-surface-variant">• Mr. Thompson</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-secondary transition-colors">chevron_right</span>
+</div>
+<!-- Class Card 3 -->
+<div class="glass-card rounded-card p-4 flex items-center gap-4 relative overflow-hidden group">
+<div class="w-16 h-16 rounded-2xl bg-tertiary-fixed overflow-hidden flex-shrink-0">
+<img class="w-full h-full object-cover" data-alt="A clean, minimalist 3D isometric icon representing history with an open antique book and a quill. Soft lighting on a light background, elegant navy and soft blue tones following the corporate yet approachable style guidelines of ClassBridge AI." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDO6ZEboZhh-50aouIv4rYhPufNP8_dVzBJMCxkMrxoP0vp4mfYmnyGgW5VaV5NCzpICNj8gHnO92_5X651vCUED0aCPRHlDu7SuwXnd6lBVi5IM1a56xUHH1wx68Xq1txU_MQ3ozBD31UE6NfG9rNc3LA_IW1UnWSwrloc_IAJwGJ01aPcFdBb7fuvyZEl8g-WK5QZogid_3N1zfoY2DTUhlJD5luosHOlz9xC8Jr4UWJGsn8XKPI_hIqHnsLykUt4-wPDzro9mJy"/>
+</div>
+<div class="flex-grow">
+<h4 class="font-body-lg font-bold text-primary">Modern History</h4>
+<div class="flex items-center gap-2 mt-1">
+<span class="text-label-sm bg-surface-container px-2 py-0.5 rounded-full text-on-surface-variant">HIST-202</span>
+<span class="text-label-sm text-on-surface-variant">• Ms. Elena Vance</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant group-hover:text-secondary transition-colors">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Sync Card -->
+<section class="animate-fade-in-up stagger-5 pb-8">
+<div class="bg-on-surface rounded-card p-6 flex items-center gap-6 text-white relative overflow-hidden">
+<div class="z-10 flex flex-col gap-1">
+<h4 class="font-headline-md leading-tight">Sync Status</h4>
+<p class="text-outline-variant text-label-md">Last synced 2 hours ago</p>
+<button class="mt-4 bg-secondary-container text-on-secondary-container px-6 py-2 rounded-full font-label-md w-fit hover:opacity-90 transition-opacity">
+                        Sync Now
+                    </button>
+</div>
+<div class="absolute -right-4 -bottom-4 opacity-10">
+<span class="material-symbols-outlined text-[120px]">cloud_sync</span>
+</div>
+</div>
+</section>
+</main>
+<!-- Bottom Navigation Bar -->
+<nav class="fixed bottom-0 w-full z-50 rounded-t-xl bg-surface border-t border-outline-variant shadow-sm flex justify-around items-center h-20 px-2 pb-safe">
+<!-- Lessons - Active -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-2xl px-4 py-1 active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">auto_stories</span>
+<span class="font-label-md text-label-md">Lessons</span>
+</a>
+<!-- Resources -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 active:scale-95 transition-transform duration-150 hover:bg-surface-container-high" href="#">
+<span class="material-symbols-outlined">folder_shared</span>
+<span class="font-label-md text-label-md">Resources</span>
+</a>
+<!-- Sync -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 active:scale-95 transition-transform duration-150 hover:bg-surface-container-high relative" href="#">
+<span class="material-symbols-outlined">sync_saved_locally</span>
+<span class="font-label-md text-label-md">Sync</span>
+<div class="absolute top-1 right-3 w-2 h-2 bg-error rounded-full"></div>
+</a>
+<!-- Profile -->
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 active:scale-95 transition-transform duration-150 hover:bg-surface-container-high" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+</nav>
+<script>
+        // Micro-interaction for class cards
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('touchstart', () => {
+                card.style.transform = 'scale(0.98)';
+            });
+            card.addEventListener('touchend', () => {
+                card.style.transform = 'scale(1)';
+            });
+        });
+
+        // Simulating a "Syncing" state
+        const syncBtn = document.querySelector('button:contains("Sync Now")');
+        if (syncBtn) {
+            syncBtn.addEventListener('click', function() {
+                this.innerHTML = '<span class="material-symbols-outlined animate-spin">sync</span> Syncing...';
+                this.disabled = true;
+                setTimeout(() => {
+                    this.innerHTML = 'Synced!';
+                    this.classList.remove('bg-secondary-container');
+                    this.classList.add('bg-green-600', 'text-white');
+                }, 2000);
+            });
+        }
+    </script>
+</body></html>

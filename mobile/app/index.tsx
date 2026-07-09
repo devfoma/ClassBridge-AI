@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 import { router } from 'expo-router';
 import { Screen } from '../src/components/Screen';
 import { RoleCard } from '../src/components/RoleCard';
 import { TextField } from '../src/components/TextField';
+import { Chip } from '../src/components/Chip';
 import { useAuthStore } from '../src/state/useAuthStore';
 import { colors } from '../src/theme/colors';
-import { spacing } from '../src/theme/spacing';
+import { fonts, text as t } from '../src/theme/typography';
+import { spacing, radius, shadow } from '../src/theme/spacing';
 import { UserRole } from '../src/types/user';
 
 export default function RoleSelection() {
@@ -28,11 +30,11 @@ export default function RoleSelection() {
   return (
     <Screen contentStyle={styles.content}>
       <View style={styles.header}>
-        <Text style={styles.logo}>C3</Text>
-        <Text style={styles.title}>ClassBridge AI</Text>
-        <Text style={styles.subtitle}>
-          A Gemma-powered offline classroom for low-connectivity schools.
-        </Text>
+        <View style={styles.logoWrap}>
+          <Image source={require('../assets/icon.png')} style={styles.logo} resizeMode="contain" />
+        </View>
+        <Text style={styles.title}>Start your classroom session</Text>
+        <Text style={styles.subtitle}>Choose your bridge to the offline digital learning environment.</Text>
       </View>
 
       <TextField
@@ -46,62 +48,66 @@ export default function RoleSelection() {
       <Text style={styles.pick}>Choose your role</Text>
 
       <RoleCard
-        icon="👩🏽‍🏫"
+        icon="school"
         title="Teacher"
         subtitle="Create classes, import lessons, generate quizzes with Gemma and review student work."
+        cta="Enter classroom"
         accent={colors.teacher}
         accentSoft={colors.teacherSoft}
         onPress={() => onChoose('teacher')}
       />
       <RoleCard
-        icon="🧑🏽‍🎓"
+        icon="person"
         title="Student"
         subtitle="Join a class, download lessons, and complete quizzes offline — sync when connected."
+        cta="Join a lesson"
         accent={colors.student}
         accentSoft={colors.studentSoft}
         onPress={() => onChoose('student')}
       />
 
-      <Text style={styles.footer}>
-        No sign-up needed. Your data stays on your device and the local school hub.
-      </Text>
+      <View style={styles.footer}>
+        <Chip label="OFFLINE-FIRST CLASSROOM" icon="offline" color={colors.navy} bg={colors.surface2} />
+        <Text style={styles.footerNote}>
+          No sign-up needed. Your data stays on your device and the local school hub.
+        </Text>
+      </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  content: { justifyContent: 'center' },
+  content: { justifyContent: 'center', paddingHorizontal: spacing.screen },
   header: { alignItems: 'center', marginBottom: spacing.xl },
-  logo: {
-    fontSize: 40,
-    fontWeight: '900',
-    color: colors.navy,
-    letterSpacing: 2,
-    backgroundColor: colors.blueSoft,
-    width: 84,
-    height: 84,
-    borderRadius: 24,
-    textAlign: 'center',
-    textAlignVertical: 'center',
-    lineHeight: 84,
-    overflow: 'hidden',
-    marginBottom: spacing.md,
+  logoWrap: {
+    width: 88,
+    height: 88,
+    borderRadius: radius.card,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.lg,
+    ...shadow.card,
   },
-  title: { fontSize: 28, fontWeight: '900', color: colors.navy },
+  logo: { width: 60, height: 60 },
+  title: { ...t.headlineLgMobile, textAlign: 'center' },
   subtitle: {
-    fontSize: 15,
+    ...t.bodyMd,
     color: colors.textMuted,
     textAlign: 'center',
     marginTop: spacing.sm,
-    lineHeight: 21,
     paddingHorizontal: spacing.md,
   },
-  pick: { fontSize: 16, fontWeight: '700', color: colors.text, marginTop: spacing.md, marginBottom: spacing.md },
-  footer: {
+  pick: { fontFamily: fonts.bold, fontSize: 16, color: colors.text, marginTop: spacing.lg, marginBottom: spacing.md },
+  footer: { alignItems: 'center', marginTop: spacing.xl, gap: spacing.md },
+  footerNote: {
+    fontFamily: fonts.regular,
     fontSize: 12,
-    color: colors.textMuted,
+    color: colors.textFaint,
     textAlign: 'center',
-    marginTop: spacing.lg,
     lineHeight: 17,
+    paddingHorizontal: spacing.lg,
   },
 });

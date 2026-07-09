@@ -1,11 +1,14 @@
 import React, { useCallback, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
+import { AppBar, AppBarAction } from '../../src/components/AppBar';
 import { AppCard } from '../../src/components/AppCard';
 import { AppButton } from '../../src/components/AppButton';
 import { StatCard } from '../../src/components/StatCard';
+import { SectionHeader } from '../../src/components/SectionHeader';
 import { HubStatusBadge } from '../../src/components/SyncStatusBadge';
+import { Icon, IconName } from '../../src/components/Icon';
 import { useAuthStore } from '../../src/state/useAuthStore';
 import { useHubStore } from '../../src/state/useHubStore';
 import { useSyncStore } from '../../src/state/useSyncStore';
@@ -14,7 +17,8 @@ import { listAssignments } from '../../src/db/repositories/assignmentRepo';
 import { countDownloaded } from '../../src/db/repositories/resourceRepo';
 import { getNetworkState } from '../../src/services/networkService';
 import { colors } from '../../src/theme/colors';
-import { spacing } from '../../src/theme/spacing';
+import { fonts, text as t } from '../../src/theme/typography';
+import { spacing, radius } from '../../src/theme/spacing';
 
 export default function StudentDashboard() {
   const user = useAuthStore((s) => s.user);
@@ -50,71 +54,100 @@ export default function StudentDashboard() {
   );
 
   return (
-    <Screen onRefresh={load} refreshing={refreshing}>
-      <View style={styles.header}>
+    <Screen
+      header={
+        <AppBar
+          title="ClassBridge AI"
+          role="student"
+          brand
+          right={<AppBarAction name="sync" onPress={() => router.push('/student/sync')} />}
+        />
+      }
+      onRefresh={load}
+      refreshing={refreshing}
+    >
+      <View style={styles.headRow}>
         <View style={styles.flex}>
-          <Text style={styles.greeting}>Student Mode</Text>
-          <Text style={styles.name}>Hi {user?.name ?? 'Student'} 👋</Text>
+          <Text style={styles.greeting}>STUDENT MODE</Text>
+          <Text style={styles.name}>Hi {user?.name?.trim() || 'Student'} 👋</Text>
         </View>
-        <AppButton title="⚙︎" variant="ghost" onPress={() => router.push('/student/settings')} style={styles.gear} />
+        <HubStatusBadge online={online} />
       </View>
-
-      <HubStatusBadge online={online} />
       <Text style={styles.net}>Network: {netType}. Lessons you downloaded work fully offline.</Text>
 
       <View style={styles.statsRow}>
-        <StatCard label="Classes" value={classes} icon="🏫" accent={colors.blue} />
-        <View style={{ width: spacing.md }} />
-        <StatCard label="Lessons" value={lessons} icon="📖" accent={colors.navy} />
+        <StatCard label="Classes" value={classes} icon="classroom" accent={colors.blue} accentSoft={colors.blueSoft} />
+        <StatCard label="Lessons" value={lessons} icon="lessons" accent={colors.navy} accentSoft={colors.navySoft} />
       </View>
       <View style={styles.statsRow}>
-        <StatCard label="Downloaded" value={downloaded} icon="✅" accent={colors.success} />
-        <View style={{ width: spacing.md }} />
-        <StatCard label="Pending Sync" value={pendingCount} icon="⏳" accent={colors.warning} />
+        <StatCard label="Downloaded" value={downloaded} icon="check" accent={colors.success} accentSoft={colors.successSoft} />
+        <StatCard label="Pending Sync" value={pendingCount} icon="pending" accent={colors.warning} accentSoft={colors.warningSoft} />
       </View>
 
       {pendingCount > 0 ? (
         <AppCard accent={colors.warning}>
-          <Text style={styles.pendingTitle}>⏳ {pendingCount} submission(s) saved offline</Text>
+          <View style={styles.pendingHead}>
+            <Icon name="cloudOff" size={18} color={colors.warning} />
+            <Text style={styles.pendingTitle}>{pendingCount} submission(s) saved offline</Text>
+          </View>
           <Text style={styles.pendingBody}>Reconnect to the hub and sync to send your work to the teacher.</Text>
-          <AppButton title="Open Sync Center" icon="🔄" onPress={() => router.push('/student/sync')} style={{ marginTop: spacing.md }} />
+          <AppButton title="Open Sync Center" icon="sync" onPress={() => router.push('/student/sync')} style={{ marginTop: spacing.md }} />
         </AppCard>
       ) : null}
 
-      <Text style={styles.sectionTitle}>Quick actions</Text>
+      <SectionHeader title="Quick actions" />
       <View style={styles.grid}>
-        <QuickButton icon="➕" label="Join Class" onPress={() => router.push('/student/join-class')} />
-        <QuickButton icon="📖" label="My Lessons" onPress={() => router.push('/student/lessons')} />
-        <QuickButton icon="🔄" label="Sync Center" onPress={() => router.push('/student/sync')} />
-        <QuickButton icon="🏅" label="Feedback" onPress={() => router.push('/student/feedback')} />
-        <QuickButton icon="⚙️" label="Settings" onPress={() => router.push('/student/settings')} />
+        <QuickButton icon="add" label="Join Class" onPress={() => router.push('/student/join-class')} />
+        <QuickButton icon="lessons" label="My Lessons" onPress={() => router.push('/student/lessons')} />
+        <QuickButton icon="sync" label="Sync Center" onPress={() => router.push('/student/sync')} />
+        <QuickButton icon="feedback" label="Feedback" onPress={() => router.push('/student/feedback')} />
       </View>
     </Screen>
   );
 }
 
-function QuickButton({ icon, label, onPress }: { icon: string; label: string; onPress: () => void }) {
+function QuickButton({ icon, label, onPress }: { icon: IconName; label: string; onPress: () => void }) {
   return (
-    <AppCard onPress={onPress} style={styles.quick}>
-      <Text style={styles.quickIcon}>{icon}</Text>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.quick, pressed && styles.pressed]}>
+      <View style={styles.quickIcon}>
+        <Icon name={icon} size={22} color={colors.blue} />
+      </View>
       <Text style={styles.quickLabel}>{label}</Text>
-    </AppCard>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  header: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md },
+  headRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   flex: { flex: 1 },
-  greeting: { fontSize: 13, fontWeight: '700', color: colors.blue, textTransform: 'uppercase' },
-  name: { fontSize: 24, fontWeight: '800', color: colors.text },
-  gear: { minHeight: 44, paddingHorizontal: spacing.md, minWidth: 52 },
-  net: { fontSize: 12, color: colors.textMuted, marginTop: spacing.sm },
-  statsRow: { flexDirection: 'row', marginTop: spacing.md },
-  pendingTitle: { fontSize: 15, fontWeight: '800', color: colors.text, marginBottom: spacing.xs },
-  pendingBody: { fontSize: 13, color: colors.textMuted, lineHeight: 18 },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: colors.text, marginTop: spacing.lg, marginBottom: spacing.md },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  quick: { width: '48%', alignItems: 'center', paddingVertical: spacing.lg },
-  quickIcon: { fontSize: 28, marginBottom: spacing.xs },
-  quickLabel: { fontSize: 14, fontWeight: '700', color: colors.text, textAlign: 'center' },
+  greeting: { ...t.overline, color: colors.blue },
+  name: { fontFamily: fonts.extrabold, fontSize: 26, color: colors.navy, marginTop: 2 },
+  net: { fontFamily: fonts.regular, fontSize: 12, color: colors.textFaint, marginTop: spacing.sm, marginBottom: spacing.md },
+  statsRow: { flexDirection: 'row', gap: spacing.md, marginBottom: spacing.md },
+  pendingHead: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.xs },
+  pendingTitle: { fontFamily: fonts.bold, fontSize: 15, color: colors.text },
+  pendingBody: { ...t.bodySm, color: colors.textMuted },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md },
+  quick: {
+    width: '47.5%',
+    flexGrow: 1,
+    backgroundColor: colors.card,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.md,
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  quickIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.md,
+    backgroundColor: colors.blueSoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quickLabel: { fontFamily: fonts.semibold, fontSize: 13, color: colors.text, textAlign: 'center' },
+  pressed: { opacity: 0.9, transform: [{ scale: 0.99 }] },
 });

@@ -1,16 +1,20 @@
 import React, { useCallback, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
+import { AppBar, AppBarAction } from '../../src/components/AppBar';
 import { AppCard } from '../../src/components/AppCard';
 import { AppButton } from '../../src/components/AppButton';
 import { StatCard } from '../../src/components/StatCard';
+import { SectionHeader } from '../../src/components/SectionHeader';
 import { HubStatusBadge } from '../../src/components/SyncStatusBadge';
+import { Icon, IconName } from '../../src/components/Icon';
 import { useAuthStore } from '../../src/state/useAuthStore';
 import { useHubStore } from '../../src/state/useHubStore';
 import { api } from '../../src/services/apiClient';
 import { colors } from '../../src/theme/colors';
-import { spacing } from '../../src/theme/spacing';
+import { fonts, text as t } from '../../src/theme/typography';
+import { spacing, radius } from '../../src/theme/spacing';
 
 export default function TeacherDashboard() {
   const user = useAuthStore((s) => s.user);
@@ -61,31 +65,50 @@ export default function TeacherDashboard() {
   );
 
   return (
-    <Screen onRefresh={load} refreshing={refreshing}>
-      <View style={styles.header}>
+    <Screen
+      header={
+        <AppBar
+          title="ClassBridge AI"
+          role="teacher"
+          brand
+          right={<AppBarAction name="refresh" onPress={load} />}
+        />
+      }
+      onRefresh={load}
+      refreshing={refreshing}
+    >
+      <View style={styles.headRow}>
         <View style={styles.flex}>
-          <Text style={styles.greeting}>Teacher Mode</Text>
-          <Text style={styles.name}>Hi {user?.name ?? 'Teacher'} 👋</Text>
+          <Text style={styles.greeting}>TEACHER MODE</Text>
+          <Text style={styles.name}>Hi {user?.name?.trim() || 'Teacher'} 👋</Text>
         </View>
-        <AppButton title="⚙︎" variant="ghost" onPress={() => router.push('/teacher/settings')} style={styles.gear} />
+        <HubStatusBadge online={online} />
       </View>
-
-      <HubStatusBadge online={online} />
 
       <View style={styles.statsRow}>
-        <StatCard label="Classrooms" value={classCount} icon="🏫" accent={colors.navy} />
-        <View style={{ width: spacing.md }} />
-        <StatCard label="Pending" value={pending} icon="⏳" accent={colors.warning} />
+        <StatCard label="Classrooms" value={classCount} icon="classroom" accent={colors.navy} accentSoft={colors.navySoft} />
+        <StatCard
+          label="Pending"
+          value={pending}
+          icon="pending"
+          accent={colors.warning}
+          accentSoft={colors.warningSoft}
+        />
       </View>
 
-      <AppCard accent={colors.blue}>
-        <Text style={styles.cardTitle}>🧠 AI Class Insight</Text>
+      <AppCard accent={colors.blue} style={styles.insightCard}>
+        <View style={styles.insightHead}>
+          <View style={[styles.insightIcon, { backgroundColor: colors.blueSoft }]}>
+            <Icon name="insight" size={20} color={colors.blue} />
+          </View>
+          <Text style={styles.cardTitle}>AI Class Insight</Text>
+        </View>
         <Text style={styles.insightText}>
           {insight ?? 'No insights yet. Once students submit work, Gemma will summarise how the class is doing.'}
         </Text>
         <AppButton
           title="View Insights"
-          variant="primary"
+          icon="insight"
           onPress={() => router.push('/teacher/insights')}
           style={{ marginTop: spacing.md }}
         />
@@ -93,46 +116,66 @@ export default function TeacherDashboard() {
 
       {recentStudents.length > 0 ? (
         <AppCard>
-          <Text style={styles.cardTitle}>🔄 Recently Synced Students</Text>
+          <Text style={styles.cardTitle}>Recently synced students</Text>
           <Text style={styles.students}>{recentStudents.join(', ')}</Text>
         </AppCard>
       ) : null}
 
-      <Text style={styles.sectionTitle}>Quick actions</Text>
+      <SectionHeader title="Quick actions" />
       <View style={styles.grid}>
-        <QuickButton icon="🏫" label="Classrooms" onPress={() => router.push('/teacher/classrooms')} />
-        <QuickButton icon="📚" label="Library" onPress={() => router.push('/teacher/library')} />
-        <QuickButton icon="📝" label="Create Assignment" onPress={() => router.push('/teacher/assignment-create')} />
-        <QuickButton icon="📥" label="Submissions" onPress={() => router.push('/teacher/submissions')} />
-        <QuickButton icon="🧠" label="AI Insights" onPress={() => router.push('/teacher/insights')} />
-        <QuickButton icon="⚙️" label="Settings" onPress={() => router.push('/teacher/settings')} />
+        <QuickButton icon="classroom" label="Classrooms" onPress={() => router.push('/teacher/classrooms')} />
+        <QuickButton icon="add" label="Create Assignment" onPress={() => router.push('/teacher/assignment-create')} />
+        <QuickButton icon="library" label="Library" onPress={() => router.push('/teacher/library')} />
+        <QuickButton icon="submissions" label="Submissions" onPress={() => router.push('/teacher/submissions')} />
       </View>
     </Screen>
   );
 }
 
-function QuickButton({ icon, label, onPress }: { icon: string; label: string; onPress: () => void }) {
+function QuickButton({ icon, label, onPress }: { icon: IconName; label: string; onPress: () => void }) {
   return (
-    <AppCard onPress={onPress} style={styles.quick}>
-      <Text style={styles.quickIcon}>{icon}</Text>
+    <Pressable onPress={onPress} style={({ pressed }) => [styles.quick, pressed && styles.pressed]}>
+      <View style={styles.quickIcon}>
+        <Icon name={icon} size={22} color={colors.navy} />
+      </View>
       <Text style={styles.quickLabel}>{label}</Text>
-    </AppCard>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  header: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.md },
+  headRow: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.lg, gap: spacing.md },
   flex: { flex: 1 },
-  greeting: { fontSize: 13, fontWeight: '700', color: colors.blue, textTransform: 'uppercase' },
-  name: { fontSize: 24, fontWeight: '800', color: colors.text },
-  gear: { minHeight: 44, paddingHorizontal: spacing.md, minWidth: 52 },
-  statsRow: { flexDirection: 'row', marginTop: spacing.md, marginBottom: spacing.md },
-  cardTitle: { fontSize: 16, fontWeight: '700', color: colors.text, marginBottom: spacing.sm },
-  insightText: { fontSize: 14, color: colors.textMuted, lineHeight: 20 },
-  students: { fontSize: 14, color: colors.text },
-  sectionTitle: { fontSize: 16, fontWeight: '700', color: colors.text, marginTop: spacing.md, marginBottom: spacing.md },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between' },
-  quick: { width: '48%', alignItems: 'center', paddingVertical: spacing.lg },
-  quickIcon: { fontSize: 28, marginBottom: spacing.xs },
-  quickLabel: { fontSize: 14, fontWeight: '700', color: colors.text, textAlign: 'center' },
+  greeting: { ...t.overline, color: colors.blue },
+  name: { fontFamily: fonts.extrabold, fontSize: 26, color: colors.navy, marginTop: 2 },
+  statsRow: { flexDirection: 'row', gap: spacing.md, marginBottom: spacing.md },
+  insightCard: { marginTop: spacing.xs },
+  insightHead: { flexDirection: 'row', alignItems: 'center', gap: spacing.sm, marginBottom: spacing.sm },
+  insightIcon: { width: 34, height: 34, borderRadius: 10, alignItems: 'center', justifyContent: 'center' },
+  cardTitle: { fontFamily: fonts.bold, fontSize: 16, color: colors.text },
+  insightText: { ...t.bodySm, color: colors.textMuted },
+  students: { ...t.bodySm, color: colors.text, marginTop: spacing.xs },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.md },
+  quick: {
+    width: '47.5%',
+    flexGrow: 1,
+    backgroundColor: colors.card,
+    borderRadius: radius.lg,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.md,
+    alignItems: 'center',
+    gap: spacing.sm,
+  },
+  quickIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.md,
+    backgroundColor: colors.navySoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  quickLabel: { fontFamily: fonts.semibold, fontSize: 13, color: colors.text, textAlign: 'center' },
+  pressed: { opacity: 0.9, transform: [{ scale: 0.99 }] },
 });

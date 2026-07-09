@@ -1,42 +1,83 @@
 import React from 'react';
-import { RefreshControl, ScrollView, StyleSheet, View, ViewStyle, StyleProp } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  RefreshControl,
+  ScrollView,
+  StyleSheet,
+  View,
+  ViewStyle,
+  StyleProp,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { colors } from '../theme/colors';
 import { spacing } from '../theme/spacing';
 
 interface Props {
   children: React.ReactNode;
+  /** An <AppBar/> element rendered above the scrollable content. */
+  header?: React.ReactNode;
   scroll?: boolean;
   onRefresh?: () => void;
   refreshing?: boolean;
   contentStyle?: StyleProp<ViewStyle>;
+  /** Apply the standard screen padding. Set false for full-bleed layouts. */
+  padded?: boolean;
 }
 
-/** Standard padded screen container with optional pull-to-refresh. */
-export function Screen({ children, scroll = true, onRefresh, refreshing, contentStyle }: Props) {
-  if (!scroll) {
-    return (
-      <SafeAreaView style={styles.safe} edges={['bottom']}>
-        <View style={[styles.content, contentStyle]}>{children}</View>
-      </SafeAreaView>
-    );
-  }
+/** Standard screen container: optional app-bar + padded, scrollable body. */
+export function Screen({
+  children,
+  header,
+  scroll = true,
+  onRefresh,
+  refreshing,
+  contentStyle,
+  padded = true,
+}: Props) {
+  const inner = scroll ? (
+    <ScrollView
+      style={styles.grow}
+      contentContainerStyle={[styles.grow, padded && styles.content, contentStyle]}
+      keyboardShouldPersistTaps="handled"
+      showsVerticalScrollIndicator={false}
+      refreshControl={
+        onRefresh ? (
+          <RefreshControl refreshing={!!refreshing} onRefresh={onRefresh} tintColor={colors.blue} />
+        ) : undefined
+      }
+    >
+      {children}
+    </ScrollView>
+  ) : (
+    <View style={[styles.grow, padded && styles.content, contentStyle]}>{children}</View>
+  );
+
   return (
-    <SafeAreaView style={styles.safe} edges={['bottom']}>
-      <ScrollView
-        contentContainerStyle={[styles.content, contentStyle]}
-        keyboardShouldPersistTaps="handled"
-        refreshControl={
-          onRefresh ? <RefreshControl refreshing={!!refreshing} onRefresh={onRefresh} /> : undefined
-        }
+    <View style={styles.root}>
+      {header}
+      <KeyboardAvoidingView
+        style={styles.grow}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        {children}
-      </ScrollView>
-    </SafeAreaView>
+        {header ? (
+          inner
+        ) : (
+          <SafeAreaView style={styles.grow} edges={['top']}>
+            {inner}
+          </SafeAreaView>
+        )}
+      </KeyboardAvoidingView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: colors.bg },
-  content: { padding: spacing.lg, paddingBottom: spacing.xxl, flexGrow: 1 },
+  root: { flex: 1, backgroundColor: colors.bg },
+  grow: { flex: 1, flexGrow: 1 },
+  content: {
+    paddingHorizontal: spacing.screen,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.xxl,
+  },
 });

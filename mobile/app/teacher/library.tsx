@@ -2,14 +2,17 @@ import React, { useCallback, useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Text, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
+import { AppBar } from '../../src/components/AppBar';
 import { AppCard } from '../../src/components/AppCard';
 import { AppButton } from '../../src/components/AppButton';
 import { ResourceCard } from '../../src/components/ResourceCard';
+import { SectionHeader } from '../../src/components/SectionHeader';
 import { EmptyState } from '../../src/components/EmptyState';
 import { useAuthStore } from '../../src/state/useAuthStore';
 import { api } from '../../src/services/apiClient';
 import { ResourcePublic } from '../../src/types/resource';
 import { colors } from '../../src/theme/colors';
+import { fonts } from '../../src/theme/typography';
 import { spacing } from '../../src/theme/spacing';
 
 const PHOTOSYNTHESIS_PACK = '../sample-packs/photosynthesis-pack';
@@ -60,7 +63,7 @@ export default function Library() {
     setBusyId(r.id);
     try {
       const result = await api.summarize(user.hubUrl, r.id);
-      Alert.alert('Summary ready ✅', result.summary);
+      Alert.alert('Summary ready', result.summary);
       await load();
     } catch (err) {
       Alert.alert('Gemma summary failed', (err as Error).message);
@@ -69,37 +72,45 @@ export default function Library() {
   };
 
   return (
-    <Screen onRefresh={load} refreshing={refreshing}>
+    <Screen
+      header={<AppBar title="Library" role="teacher" />}
+      onRefresh={load}
+      refreshing={refreshing}
+    >
       <AppCard>
         <Text style={styles.cardTitle}>Import a sample pack</Text>
-        <Text style={styles.cardHint}>
-          These small text lessons live on the hub. Great for a quick demo.
-        </Text>
+        <Text style={styles.cardHint}>These small text lessons live on the hub. Great for a quick demo.</Text>
         <AppButton
           title="Import Photosynthesis Pack"
-          icon="🌿"
+          icon="download"
           onPress={() => importPack(PHOTOSYNTHESIS_PACK)}
           loading={importing}
+          accent={colors.navy}
         />
         <AppButton
           title="Import Fractions Pack"
-          icon="➗"
+          icon="download"
           variant="secondary"
+          accent={colors.navy}
           onPress={() => importPack(FRACTIONS_PACK)}
           style={{ marginTop: spacing.md }}
         />
         <AppButton
           title="Upload a Text File"
-          icon="📤"
+          icon="upload"
           variant="ghost"
           onPress={() => router.push('/teacher/upload-resource')}
           style={{ marginTop: spacing.md }}
         />
       </AppCard>
 
-      <Text style={styles.section}>Resources</Text>
+      <SectionHeader title="Resources" />
       {resources.length === 0 ? (
-        <EmptyState icon="📚" title="No resources yet" message="Import a sample pack or upload a text file to get started." />
+        <EmptyState
+          icon="library"
+          title="No resources yet"
+          message="Import a sample pack or upload a text file to get started."
+        />
       ) : (
         resources.map((r) => (
           <View key={r.id} style={styles.actionRow}>
@@ -113,17 +124,21 @@ export default function Library() {
             <View style={styles.actions}>
               <AppButton
                 title="Summarize"
-                icon="🧠"
-                variant="ghost"
+                icon="ai"
+                variant="secondary"
+                accent={colors.navy}
                 onPress={() => summarize(r)}
                 loading={busyId === r.id}
                 style={styles.actionBtn}
               />
               <AppButton
-                title="Make Quiz & Assign"
-                icon="📝"
+                title="Make Quiz"
+                icon="quiz"
                 onPress={() =>
-                  router.push({ pathname: '/teacher/assignment-create', params: { resourceId: r.id, resourceTitle: r.title } })
+                  router.push({
+                    pathname: '/teacher/assignment-create',
+                    params: { resourceId: r.id, resourceTitle: r.title },
+                  })
                 }
                 style={styles.actionBtn}
               />
@@ -136,9 +151,8 @@ export default function Library() {
 }
 
 const styles = StyleSheet.create({
-  cardTitle: { fontSize: 16, fontWeight: '700', color: colors.text, marginBottom: spacing.xs },
-  cardHint: { fontSize: 13, color: colors.textMuted, marginBottom: spacing.md, lineHeight: 18 },
-  section: { fontSize: 16, fontWeight: '700', color: colors.text, marginTop: spacing.md, marginBottom: spacing.md },
+  cardTitle: { fontFamily: fonts.bold, fontSize: 16, color: colors.text, marginBottom: spacing.xs },
+  cardHint: { fontFamily: fonts.regular, fontSize: 13, color: colors.textMuted, marginBottom: spacing.md, lineHeight: 18 },
   actionRow: { marginBottom: spacing.lg },
   actions: { flexDirection: 'row', gap: spacing.md, marginTop: -spacing.xs },
   actionBtn: { flex: 1 },

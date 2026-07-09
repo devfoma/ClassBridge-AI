@@ -2,8 +2,10 @@ import React, { useCallback, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { router, useFocusEffect } from 'expo-router';
 import { Screen } from '../../src/components/Screen';
+import { AppBar } from '../../src/components/AppBar';
 import { AppButton } from '../../src/components/AppButton';
 import { AssignmentCard } from '../../src/components/AssignmentCard';
+import { SectionHeader } from '../../src/components/SectionHeader';
 import { EmptyState } from '../../src/components/EmptyState';
 import { SyncStatusBadge } from '../../src/components/SyncStatusBadge';
 import { useAuthStore } from '../../src/state/useAuthStore';
@@ -13,6 +15,7 @@ import { listSubmissions } from '../../src/db/repositories/submissionRepo';
 import { LocalAssignment } from '../../src/types/assignment';
 import { SubmissionStatus } from '../../src/types/submission';
 import { colors } from '../../src/theme/colors';
+import { fonts } from '../../src/theme/typography';
 import { spacing } from '../../src/theme/spacing';
 
 export default function Lessons() {
@@ -28,7 +31,6 @@ export default function Lessons() {
     setAssignments(asgs);
     const map: Record<string, SubmissionStatus> = {};
     for (const s of subs) {
-      // keep the latest (subs are ordered desc by created_at)
       if (!map[s.assignmentId]) map[s.assignmentId] = s.status;
     }
     setStatusByAssignment(map);
@@ -52,13 +54,13 @@ export default function Lessons() {
   };
 
   return (
-    <Screen onRefresh={load} refreshing={refreshing}>
-      <AppButton title="Download New Lessons" icon="⬇️" variant="secondary" onPress={refreshFromHub} loading={syncing} />
+    <Screen header={<AppBar title="My Lessons" role="student" />} onRefresh={load} refreshing={refreshing}>
+      <AppButton title="Download New Lessons" icon="download" variant="secondary" onPress={refreshFromHub} loading={syncing} />
 
-      <Text style={styles.section}>Your lessons</Text>
+      <SectionHeader title="Your lessons" />
       {assignments.length === 0 ? (
         <EmptyState
-          icon="📖"
+          icon="lessons"
           title="No lessons yet"
           message="Join a class and pull assignments. Once downloaded, lessons open offline."
         />
@@ -88,7 +90,6 @@ export default function Lessons() {
 }
 
 const styles = StyleSheet.create({
-  section: { fontSize: 16, fontWeight: '700', color: colors.text, marginTop: spacing.lg, marginBottom: spacing.md },
   footerRow: { flexDirection: 'row' },
-  notStarted: { fontSize: 13, color: colors.textMuted, fontWeight: '600' },
+  notStarted: { fontFamily: fonts.semibold, fontSize: 13, color: colors.textFaint },
 });
