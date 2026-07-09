@@ -24,6 +24,11 @@ export function getDb(): SqliteDatabase {
 
   db.pragma('foreign_keys = ON');
   db.exec(SCHEMA_SQL);
+
+  // Schema migrations for updated user fields
+  try { db.prepare('ALTER TABLE users ADD COLUMN email TEXT').run(); } catch {}
+  try { db.prepare('ALTER TABLE users ADD COLUMN password_hash TEXT').run(); } catch {}
+
   return db;
 }
 

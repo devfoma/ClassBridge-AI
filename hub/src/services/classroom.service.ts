@@ -13,10 +13,6 @@ export function upsertUser(input: {
   deviceId?: string | null;
 }): User {
   const db = getDb();
-  // Ensure schema has email column if this runs on an existing DB
-  try { db.prepare('ALTER TABLE users ADD COLUMN email TEXT UNIQUE').run(); } catch {}
-  try { db.prepare('ALTER TABLE users ADD COLUMN password_hash TEXT').run(); } catch {}
-
   const existing = db.prepare('SELECT * FROM users WHERE id = ?').get(input.id) as User | undefined;
   if (existing) {
     db.prepare('UPDATE users SET email = ?, password_hash = ?, name = ?, role = ?, device_id = ? WHERE id = ?').run(
