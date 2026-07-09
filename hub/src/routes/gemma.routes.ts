@@ -1,12 +1,11 @@
 import { Router } from 'express';
 import { z } from 'zod';
-import { askGemma } from '../services/gemma.service';
 import { getResourceOrThrow, updateResourceSummary } from '../services/resource.service';
 import { gradeAnswer } from '../services/grading.service';
 import { summarizeResourcePrompt } from '../prompts/summarizeResource.prompt';
 import { generateQuizPrompt } from '../prompts/generateQuiz.prompt';
 import {
-  parseAndValidate,
+  askGemmaForJson,
   summarySchema,
   quizSchema,
   normalizeQuiz,
@@ -44,33 +43,33 @@ gemmaRouter.post('/gemma/summarize', async (req, res, next) => {
       resource.level ?? 'JSS2'
     );
 
-    let raw: string;
+    let result: Awaited<ReturnType<typeof askGemmaForJson<ResourceSummary>>>;
     try {
-      ({ raw } = await askGemma(prompt));
+      // One retry with a corrective follow-up prompt if the first draw isn't valid JSON.
+      result = await askGemmaForJson<ResourceSummary>(prompt, summarySchema, 1);
     } catch (err) {
       handleGemmaError(err);
     }
 
-    const result = parseAndValidate<ResourceSummary>(raw!, summarySchema);
-    if (!result.ok || !result.data) {
-      throw serviceUnavailable('Gemma returned malformed JSON for the summary.', { error: result.error });
+    if (!result!.ok || !result!.data) {
+      throw serviceUnavailable('Gemma returned malformed JSON for the summary.', { error: result!.error });
     }
 
     // Persist the summary so the teacher's library reflects it.
-    updateResourceSummary(resource.id, result.data.summary, {
-      topics: result.data.topics,
-      prerequisites: result.data.prerequisites,
-      suggestedActivity: result.data.suggestedActivity,
+    updateResourceSummary(resource.id, result!.data.summary, {
+      topics: result!.data.topics,
+      prerequisites: result!.data.prerequisites,
+      suggestedActivity: result!.data.suggestedActivity,
     });
 
     res.json({
-      summary: result.data.summary,
-      topics: result.data.topics,
-      level: result.data.level,
-      title: result.data.title,
-      subject: result.data.subject,
-      prerequisites: result.data.prerequisites,
-      suggestedActivity: result.data.suggestedActivity,
+      summary: result!.data.summary,
+      topics: result!.data.topics,
+      level: result!.data.level,
+      title: result!.data.title,
+      subject: result!.data.subject,
+      prerequisites: result!.data.prerequisites,
+      suggestedActivity: result!.data.suggestedActivity,
     });
   } catch (err) {
     next(err);
@@ -96,19 +95,19 @@ gemmaRouter.post('/gemma/generate-quiz', async (req, res, next) => {
     const level = parsed.data.level ?? resource.level ?? 'JSS2';
     const prompt = generateQuizPrompt(text, questionCount, level);
 
-    let raw: string;
+    let result: Awaited<ReturnType<typeof askGemmaForJson<Quiz>>>;
     try {
-      ({ raw } = await askGemma(prompt));
+      // One retry with a corrective follow-up prompt if the first draw isn't valid JSON.
+      result = await askGemmaForJson<Quiz>(prompt, quizSchema, 1);
     } catch (err) {
       handleGemmaError(err);
     }
 
-    const result = parseAndValidate<Quiz>(raw!, quizSchema);
-    if (!result.ok || !result.data) {
-      throw serviceUnavailable('Gemma returned malformed JSON for the quiz.', { error: result.error });
+    if (!result!.ok || !result!.data) {
+      throw serviceUnavailable('Gemma returned malformed JSON for the quiz.', { error: result!.error });
     }
 
-    const quiz = normalizeQuiz(result.data);
+    const quiz = normalizeQuiz(result!.data);
     res.json({ questions: quiz.questions });
   } catch (err) {
     next(err);

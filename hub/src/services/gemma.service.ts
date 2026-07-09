@@ -27,6 +27,20 @@ async function callOllama(prompt: string): Promise<string> {
         model: config.gemma.model,
         prompt,
         stream: false,
+        // Every prompt in this app asks for a JSON object back. Ollama's grammar-
+        // constrained "format: json" decoding is the biggest lever against
+        // malformed output — without it small local models routinely add prose,
+        // single-quote keys, or otherwise drift from valid JSON.
+        format: 'json',
+        options: {
+          // Low temperature: we want faithful structured output, not creative
+          // variation, and creative drift is a common cause of broken JSON.
+          temperature: 0.2,
+          // Generous output budget so longer quizzes/summaries aren't cut off
+          // mid-object, which produces JSON that can't be repaired (unbalanced
+          // braces) rather than just messy.
+          num_predict: 2048,
+        },
         // Keep the model resident for 30 min so subsequent requests skip the
         // cold-load cost (a big cause of sporadic timeouts on CPU-only setups).
         keep_alive: '30m',

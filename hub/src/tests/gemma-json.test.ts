@@ -1,14 +1,20 @@
 import { safeJsonParse } from '../utils/safeJson';
 import {
   parseAndValidate,
+  askGemmaForJson,
   summarySchema,
   quizSchema,
   normalizeQuiz,
 } from '../services/jsonRepair.service';
 import { mockGemma } from '../services/gemmaMock.service';
+import * as gemmaService from '../services/gemma.service';
 import { summarizeResourcePrompt } from '../prompts/summarizeResource.prompt';
 import { generateQuizPrompt } from '../prompts/generateQuiz.prompt';
 import { ResourceSummary, Quiz } from '../types/quiz';
+import { GemmaUnavailableError } from '../types/gemma';
+
+jest.mock('../services/gemma.service');
+const mockedAskGemma = gemmaService.askGemma as jest.MockedFunction<typeof gemmaService.askGemma>;
 
 const LESSON =
   'Photosynthesis is the process by which green plants make their own food using sunlight, water and carbon dioxide. Chlorophyll traps sunlight. Plants release oxygen. Plants are producers.';
@@ -84,5 +90,46 @@ describe('malformed AI JSON handling', () => {
       ],
     });
     expect(quiz.questions[0].options.length).toBe(4);
+  });
+});
+
+describe('askGemmaForJson retry-on-malformed-draw', () => {
+  beforeEach(() => {
+    mockedAskGemma.mockReset();
+  });
+
+  const validQuizRaw = JSON.stringify({
+    questions: [{ id: 'q1', type: 'short_answer', question: 'Q?', options: [], answer: 'A', marks: 1 }],
+  });
+
+  it('retries once after a malformed draw and succeeds on the corrected reply', async () => {
+    mockedAskGemma
+      .mockResolvedValueOnce({ raw: 'not json at all', provider: 'ollama', usedMockFallback: false })
+      .mockResolvedValueOnce({ raw: validQuizRaw, provider: 'ollama', usedMockFallback: false });
+
+    const result = await askGemmaForJson<Quiz>('prompt', quizSchema, 1);
+
+    expect(result.ok).toBe(true);
+    expect(result.data?.questions.length).toBe(1);
+    expect(mockedAskGemma).toHaveBeenCalledTimes(2);
+    // The retry prompt should reference the previous failure so the model can self-correct.
+    expect(mockedAskGemma.mock.calls[1][0]).toContain('previous reply could not be parsed');
+  });
+
+  it('gives up after exhausting retries and reports ok:false', async () => {
+    mockedAskGemma.mockResolvedValue({ raw: 'still not json', provider: 'ollama', usedMockFallback: false });
+
+    const result = await askGemmaForJson<Quiz>('prompt', quizSchema, 1);
+
+    expect(result.ok).toBe(false);
+    expect(result.data).toBeNull();
+    expect(mockedAskGemma).toHaveBeenCalledTimes(2); // 1 initial attempt + 1 retry
+  });
+
+  it('propagates a Gemma-unavailable error immediately instead of retrying', async () => {
+    mockedAskGemma.mockRejectedValueOnce(new GemmaUnavailableError('Ollama down'));
+
+    await expect(askGemmaForJson<Quiz>('prompt', quizSchema, 1)).rejects.toThrow('Ollama down');
+    expect(mockedAskGemma).toHaveBeenCalledTimes(1);
   });
 });

@@ -17,14 +17,25 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.classbridge.ai"
+      "bundleIdentifier": "com.classbridge.ai",
+      "infoPlist": {
+        "NSLocalNetworkUsageDescription": "ClassBridge connects to your classroom hub on the local Wi-Fi network to sync lessons and quizzes.",
+        "NSAppTransportSecurity": {
+          "NSAllowsLocalNetworking": true
+        }
+      }
     },
     "android": {
       "package": "com.classbridge.ai",
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "versionCode": 2
     },
     "web": {
       "bundler": "metro",
@@ -49,6 +60,12 @@
     ],
     "experiments": {
       "typedRoutes": false
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "16f6617f-43e0-4e56-a622-c67636673495"
+      }
     }
   }
 }

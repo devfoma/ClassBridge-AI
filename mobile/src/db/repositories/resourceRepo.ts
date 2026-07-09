@@ -12,6 +12,16 @@ interface ResourceRow {
   metadata_json: string | null;
 }
 
+function parseSummary(metadataJson: string | null): string | null {
+  if (!metadataJson) return null;
+  try {
+    const meta = JSON.parse(metadataJson) as { summary?: string | null };
+    return meta.summary ?? null;
+  } catch {
+    return null;
+  }
+}
+
 function toResource(r: ResourceRow): LocalResource {
   return {
     id: r.id,
@@ -22,6 +32,7 @@ function toResource(r: ResourceRow): LocalResource {
     downloaded: r.downloaded,
     textContent: r.text_content,
     metadataJson: r.metadata_json,
+    summary: parseSummary(r.metadata_json),
   };
 }
 
@@ -44,6 +55,28 @@ export async function upsertResource(r: LocalResource): Promise<void> {
     r.downloaded,
     r.textContent,
     r.metadataJson
+  );
+}
+
+/**
+ * Merge an AI summary into the resource's metadata_json so it displays offline
+ * and survives app restarts. Used when a student generates a summary on demand.
+ */
+export async function updateResourceSummary(id: string, summary: string): Promise<void> {
+  const db = await getMobileDb();
+  const row = await db.getFirstAsync<ResourceRow>('SELECT * FROM local_resources WHERE id = ?', id);
+  if (!row) return;
+  let meta: Record<string, unknown> = {};
+  try {
+    meta = row.metadata_json ? JSON.parse(row.metadata_json) : {};
+  } catch {
+    meta = {};
+  }
+  meta.summary = summary;
+  await db.runAsync(
+    'UPDATE local_resources SET metadata_json = ? WHERE id = ?',
+    JSON.stringify(meta),
+    id
   );
 }
 

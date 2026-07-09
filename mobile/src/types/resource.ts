@@ -21,4 +21,6 @@ export interface LocalResource {
   downloaded: number;
   textContent: string | null;
   metadataJson: string | null;
+  /** Derived from metadataJson.summary — the AI summary synced from the hub. */
+  summary?: string | null;
 }

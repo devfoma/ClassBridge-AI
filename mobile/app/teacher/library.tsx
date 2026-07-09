@@ -66,9 +66,14 @@ export default function Library() {
     if (!user?.hubUrl) return;
     setBusyId(r.id);
     try {
-      const result = await api.summarize(user.hubUrl, r.id);
-      Alert.alert('Summary ready', result.summary);
+      await api.summarize(user.hubUrl, r.id);
       await load();
+      // Funnel through the detail view so the teacher reads the full summary
+      // (and the resource text) instead of a truncated alert.
+      router.push({
+        pathname: '/teacher/resource-detail',
+        params: { id: r.id, title: r.title },
+      });
     } catch (err) {
       Alert.alert('Gemma summary failed', (err as Error).message);
     }
@@ -126,6 +131,12 @@ export default function Library() {
               subject={r.subject}
               level={r.level}
               summary={r.summary}
+              onPress={() =>
+                router.push({
+                  pathname: '/teacher/resource-detail',
+                  params: { id: r.id, title: r.title },
+                })
+              }
               right={busyId === r.id ? <ActivityIndicator color={colors.blue} /> : undefined}
             />
             <View style={styles.actions}>

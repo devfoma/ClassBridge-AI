@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { safeJsonParse } from '../utils/safeJson';
+import { askGemma } from './gemma.service';
 import { Quiz, QuizQuestion, ResourceSummary, GradeResult } from '../types/quiz';
 import { newId } from '../utils/ids';
 
@@ -66,6 +67,39 @@ export function parseAndValidate<T>(
     return { ok: false, data: null, error: result.error.message };
   }
   return { ok: true, data: result.data };
+}
+
+/**
+ * Ask Gemma for a JSON payload matching `schema`, repairing/retrying on a bad
+ * draw. Local models occasionally return unparseable or schema-invalid JSON
+ * even in JSON mode; rather than surface that straight to the teacher as a
+ * failure, retry with a corrective follow-up prompt naming the exact error.
+ * A network/availability failure from `askGemma` itself is NOT retried here —
+ * it propagates immediately so the caller's existing Ollama-unavailable
+ * handling still applies.
+ */
+export async function askGemmaForJson<T>(
+  prompt: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  schema: z.ZodType<T, z.ZodTypeDef, any>,
+  retries = 1
+): Promise<RepairResult<T>> {
+  let lastError: string | undefined;
+
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    const attemptPrompt =
+      attempt === 0
+        ? prompt
+        : `${prompt}\n\nYour previous reply could not be parsed as valid JSON (${lastError}). ` +
+          'Return ONLY the corrected JSON object: no commentary, no markdown fences, no trailing text.';
+
+    const { raw } = await askGemma(attemptPrompt);
+    const result = parseAndValidate<T>(raw, schema);
+    if (result.ok) return result;
+    lastError = result.error;
+  }
+
+  return { ok: false, data: null, error: lastError };
 }
 
 /** Normalise a validated quiz: enforce ids, MC option counts and marks. */
