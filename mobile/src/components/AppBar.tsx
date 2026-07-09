@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View, Image } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { Icon } from './Icon';
@@ -30,14 +30,20 @@ export function AppBar({ title, role, brand, back, onBack, right }: Props) {
           {back ? (
             <Pressable
               hitSlop={8}
-              onPress={onBack ?? (() => router.back())}
+              onPress={onBack ?? (() => {
+                if (router.canGoBack()) {
+                  router.back();
+                } else {
+                  router.replace('/');
+                }
+              })}
               style={({ pressed }) => [styles.backBtn, pressed && styles.pressed]}
             >
               <Icon name="back" size={24} color={colors.text} />
             </Pressable>
           ) : brand ? (
-            <View style={[styles.mark, { backgroundColor: accentSoft }]}>
-              <Icon name="school" size={20} color={accent} />
+            <View style={[styles.mark, { backgroundColor: accentSoft, overflow: 'hidden' }]}>
+              <Image source={require('../../assets/icon.png')} style={{ width: 36, height: 36 }} resizeMode="cover" />
             </View>
           ) : null}
           <Text style={[styles.title, brand && styles.brandTitle]} numberOfLines={1}>

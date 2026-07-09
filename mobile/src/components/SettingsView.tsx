@@ -65,19 +65,37 @@ export function SettingsView() {
     ]);
   };
 
-  const switchRole = () => {
-    Alert.alert('Switch role / reset profile?', 'This clears everything on this device and returns to role selection.', [
+  const [syncing, setSyncing] = useState(false);
+
+  const handleLogout = () => {
+    Alert.alert('Log out?', 'You will need your email and password to log back in.', [
       { text: 'Cancel', style: 'cancel' },
       {
-        text: 'Reset',
+        text: 'Log out',
         style: 'destructive',
         onPress: async () => {
-          await resetEverything();
-          reset();
+          await useAuthStore.getState().logout();
           router.replace('/');
         },
       },
     ]);
+  };
+
+  const syncProfile = async () => {
+    if (!user || !hubUrl) {
+      Alert.alert('Hub Required', 'Please set a Hub URL first.');
+      return;
+    }
+    setSyncing(true);
+    try {
+      const { registerWithHub } = require('../services/authService');
+      await registerWithHub({ ...user, hubUrl });
+      Alert.alert('Success', 'Profile backed up to the Hub!');
+    } catch (e) {
+      Alert.alert('Error', 'Failed to backup profile to the Hub.');
+    } finally {
+      setSyncing(false);
+    }
   };
 
   return (
@@ -141,10 +159,19 @@ export function SettingsView() {
         <Text style={styles.cardTitle}>Danger zone</Text>
         <AppButton title="Clear Local Data" icon="clear" variant="ghost" onPress={clearData} />
         <AppButton
-          title="Switch Role / Reset"
-          icon="reset"
+          title="Backup Profile to Hub"
+          icon="upload"
+          variant="secondary"
+          onPress={syncProfile}
+          loading={syncing}
+          accent={accent}
+          style={{ marginTop: spacing.md }}
+        />
+        <AppButton
+          title="Log Out"
+          icon="logout"
           variant="danger"
-          onPress={switchRole}
+          onPress={handleLogout}
           style={{ marginTop: spacing.md }}
         />
       </AppCard>

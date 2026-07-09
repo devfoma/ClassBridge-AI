@@ -9,11 +9,12 @@
  */
 export const colors = {
   // ── Brand / role ────────────────────────────────────────────────
-  navy: '#000e32', // primary
-  navyDark: '#00081f',
-  navyContainer: '#00215e', // primary-container
-  onNavyContainer: '#748bcd', // on-primary-container
-  navySoft: '#dae1ff', // primary-fixed (soft navy fill)
+  // Made blue theme consistent throughout by pointing navy to blue
+  navy: '#0059bb', // primary
+  navyDark: '#004088',
+  navyContainer: '#0070ea', // primary-container
+  onNavyContainer: '#ffffff', // on-primary-container
+  navySoft: '#d8e2ff', // primary-fixed (soft navy fill)
 
   blue: '#0059bb', // secondary (azure)
   blueLight: '#0070ea', // secondary-container
@@ -47,20 +48,19 @@ export const colors = {
   infoSoft: '#d8e2ff',
 
   // ── Role accents ────────────────────────────────────────────────
-  teacher: '#000e32',
-  teacherSoft: '#dae1ff',
+  teacher: '#0059bb',
+  teacherSoft: '#d8e2ff',
   student: '#0059bb',
   studentSoft: '#d8e2ff',
 } as const;
 
 export type ColorName = keyof typeof colors;
 
-/** Role-aware accent helper. Teacher = navy, Student = azure. */
 export function roleAccent(role?: string | null) {
-  const teacher = role === 'teacher';
+  // Use blue theme consistently throughout the app regardless of role
   return {
-    accent: teacher ? colors.teacher : colors.student,
-    accentSoft: teacher ? colors.teacherSoft : colors.studentSoft,
-    accentContainer: teacher ? colors.navyContainer : colors.blueLight,
+    accent: colors.student,
+    accentSoft: colors.studentSoft,
+    accentContainer: colors.blueLight,
   };
 }

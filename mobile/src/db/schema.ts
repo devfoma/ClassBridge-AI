@@ -4,6 +4,16 @@
  * everything else; these tables are the local cache/queue.
  */
 export const MOBILE_SCHEMA_SQL = `
+CREATE TABLE IF NOT EXISTS local_accounts (
+  id TEXT PRIMARY KEY,
+  email TEXT UNIQUE NOT NULL,
+  password_hash TEXT NOT NULL,
+  name TEXT NOT NULL,
+  role TEXT NOT NULL,
+  device_id TEXT NOT NULL,
+  hub_url TEXT
+);
+
 CREATE TABLE IF NOT EXISTS local_user (
   id TEXT PRIMARY KEY,
   name TEXT NOT NULL,

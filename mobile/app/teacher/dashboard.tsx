@@ -14,7 +14,7 @@ import { useHubStore } from '../../src/state/useHubStore';
 import { api } from '../../src/services/apiClient';
 import { colors } from '../../src/theme/colors';
 import { fonts, text as t } from '../../src/theme/typography';
-import { spacing, radius } from '../../src/theme/spacing';
+import { spacing, radius, shadow } from '../../src/theme/spacing';
 
 export default function TeacherDashboard() {
   const user = useAuthStore((s) => s.user);
@@ -79,7 +79,6 @@ export default function TeacherDashboard() {
     >
       <View style={styles.headRow}>
         <View style={styles.flex}>
-          <Text style={styles.greeting}>TEACHER MODE</Text>
           <Text style={styles.name}>Hi {user?.name?.trim() || 'Teacher'} 👋</Text>
         </View>
         <HubStatusBadge online={online} />
@@ -146,7 +145,6 @@ function QuickButton({ icon, label, onPress }: { icon: IconName; label: string; 
 const styles = StyleSheet.create({
   headRow: { flexDirection: 'row', alignItems: 'center', marginBottom: spacing.lg, gap: spacing.md },
   flex: { flex: 1 },
-  greeting: { ...t.overline, color: colors.blue },
   name: { fontFamily: fonts.extrabold, fontSize: 26, color: colors.navy, marginTop: 2 },
   statsRow: { flexDirection: 'row', gap: spacing.md, marginBottom: spacing.md },
   insightCard: { marginTop: spacing.xs },
@@ -161,12 +159,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: colors.card,
     borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
     paddingVertical: spacing.lg,
     paddingHorizontal: spacing.md,
     alignItems: 'center',
     gap: spacing.sm,
+    ...shadow.card,
   },
   quickIcon: {
     width: 44,

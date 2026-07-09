@@ -15,6 +15,7 @@ interface Props {
   autoFocus?: boolean;
   hint?: string;
   accent?: string;
+  secureTextEntry?: boolean;
 }
 
 export function TextField({
@@ -28,6 +29,7 @@ export function TextField({
   autoFocus,
   hint,
   accent = colors.blue,
+  secureTextEntry,
 }: Props) {
   const [focused, setFocused] = useState(false);
   return (
@@ -48,6 +50,7 @@ export function TextField({
         keyboardType={keyboardType}
         multiline={multiline}
         autoFocus={autoFocus}
+        secureTextEntry={secureTextEntry}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
       />

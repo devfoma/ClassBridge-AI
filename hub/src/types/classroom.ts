@@ -2,6 +2,8 @@ export type UserRole = 'teacher' | 'student';
 
 export interface User {
   id: string;
+  email: string | null;
+  password_hash: string | null;
   name: string;
   role: UserRole;
   device_id: string | null;

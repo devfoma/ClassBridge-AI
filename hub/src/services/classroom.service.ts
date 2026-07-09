@@ -6,14 +6,22 @@ import { Classroom, ClassroomDetail, ClassroomMember, User, UserRole } from '../
 
 export function upsertUser(input: {
   id: string;
+  email?: string | null;
+  passwordHash?: string | null;
   name: string;
   role: UserRole;
   deviceId?: string | null;
 }): User {
   const db = getDb();
+  // Ensure schema has email column if this runs on an existing DB
+  try { db.prepare('ALTER TABLE users ADD COLUMN email TEXT UNIQUE').run(); } catch {}
+  try { db.prepare('ALTER TABLE users ADD COLUMN password_hash TEXT').run(); } catch {}
+
   const existing = db.prepare('SELECT * FROM users WHERE id = ?').get(input.id) as User | undefined;
   if (existing) {
-    db.prepare('UPDATE users SET name = ?, role = ?, device_id = ? WHERE id = ?').run(
+    db.prepare('UPDATE users SET email = ?, password_hash = ?, name = ?, role = ?, device_id = ? WHERE id = ?').run(
+      input.email ?? existing.email,
+      input.passwordHash ?? existing.password_hash,
       input.name,
       input.role,
       input.deviceId ?? existing.device_id,
@@ -21,10 +29,19 @@ export function upsertUser(input: {
     );
   } else {
     db.prepare(
-      'INSERT INTO users (id, name, role, device_id, created_at) VALUES (?, ?, ?, ?, ?)'
-    ).run(input.id, input.name, input.role, input.deviceId ?? null, nowIso());
+      'INSERT INTO users (id, email, password_hash, name, role, device_id, created_at) VALUES (?, ?, ?, ?, ?, ?, ?)'
+    ).run(input.id, input.email ?? null, input.passwordHash ?? null, input.name, input.role, input.deviceId ?? null, nowIso());
   }
   return db.prepare('SELECT * FROM users WHERE id = ?').get(input.id) as User;
+}
+
+export function loginUser(email: string, passwordHash: string): User | undefined {
+  const db = getDb();
+  const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email.toLowerCase()) as User | undefined;
+  if (user && user.password_hash === passwordHash) {
+    return user;
+  }
+  return undefined;
 }
 
 export function createClassroom(input: { teacherId: string; name: string }): Classroom {

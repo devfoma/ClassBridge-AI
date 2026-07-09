@@ -82,8 +82,12 @@ export const api = {
   },
 
   // --- Users ---
-  upsertUser(hubUrl: string, user: { id: string; name: string; role: string; deviceId: string }) {
+  upsertUser(hubUrl: string, user: { id: string; email?: string | null; passwordHash?: string | null; name: string; role: string; deviceId: string | null }) {
     return request(hubUrl, '/users/upsert', { method: 'POST', body: user });
+  },
+
+  login(hubUrl: string, email: string, passwordHash: string): Promise<{ user: { id: string; name: string; role: string; device_id: string | null; email?: string | null } }> {
+    return request(hubUrl, '/users/login', { method: 'POST', body: { email, passwordHash } });
   },
 
   // --- Classrooms ---

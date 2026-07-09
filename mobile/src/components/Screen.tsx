@@ -38,7 +38,7 @@ export function Screen({
   const inner = scroll ? (
     <ScrollView
       style={styles.grow}
-      contentContainerStyle={[styles.grow, padded && styles.content, contentStyle]}
+      contentContainerStyle={[styles.contentContainer, padded && styles.content, contentStyle]}
       keyboardShouldPersistTaps="handled"
       showsVerticalScrollIndicator={false}
       refreshControl={
@@ -75,6 +75,7 @@ export function Screen({
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: colors.bg },
   grow: { flex: 1, flexGrow: 1 },
+  contentContainer: { flexGrow: 1 },
   content: {
     paddingHorizontal: spacing.screen,
     paddingTop: spacing.lg,

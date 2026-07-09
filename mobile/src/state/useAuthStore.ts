@@ -1,12 +1,14 @@
 import { create } from 'zustand';
 import { LocalUser, UserRole } from '../types/user';
-import { currentUser, chooseRole, setHubUrl, setName, registerWithHub } from '../services/authService';
+import { currentUser, register, login, logout, setHubUrl, setName, registerWithHub } from '../services/authService';
 
 interface AuthState {
   user: LocalUser | null;
   loading: boolean;
   init: () => Promise<void>;
-  selectRole: (role: UserRole, name?: string) => Promise<LocalUser>;
+  register: (email: string, password: string, role: UserRole, name: string, hubUrl?: string) => Promise<LocalUser>;
+  login: (email: string, password: string, hubUrl?: string) => Promise<LocalUser>;
+  logout: () => Promise<void>;
   updateHubUrl: (hubUrl: string) => Promise<void>;
   updateName: (name: string) => Promise<void>;
   refresh: () => Promise<void>;
@@ -23,12 +25,21 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ user, loading: false });
   },
 
-  selectRole: async (role, name) => {
-    const user = await chooseRole(role, name);
+  register: async (email, password, role, name, hubUrl) => {
+    const user = await register(email, password, role, name, hubUrl);
     set({ user });
-    // Best-effort registration with the hub (ignored when offline / no url).
-    registerWithHub(user).catch(() => undefined);
     return user;
+  },
+
+  login: async (email, password, hubUrl) => {
+    const user = await login(email, password, hubUrl);
+    set({ user });
+    return user;
+  },
+
+  logout: async () => {
+    await logout();
+    set({ user: null });
   },
 
   updateHubUrl: async (hubUrl) => {

@@ -18,7 +18,7 @@ import { countDownloaded } from '../../src/db/repositories/resourceRepo';
 import { getNetworkState } from '../../src/services/networkService';
 import { colors } from '../../src/theme/colors';
 import { fonts, text as t } from '../../src/theme/typography';
-import { spacing, radius } from '../../src/theme/spacing';
+import { spacing, radius, shadow } from '../../src/theme/spacing';
 
 export default function StudentDashboard() {
   const user = useAuthStore((s) => s.user);
@@ -68,7 +68,6 @@ export default function StudentDashboard() {
     >
       <View style={styles.headRow}>
         <View style={styles.flex}>
-          <Text style={styles.greeting}>STUDENT MODE</Text>
           <Text style={styles.name}>Hi {user?.name?.trim() || 'Student'} 👋</Text>
         </View>
         <HubStatusBadge online={online} />
@@ -120,7 +119,6 @@ function QuickButton({ icon, label, onPress }: { icon: IconName; label: string; 
 const styles = StyleSheet.create({
   headRow: { flexDirection: 'row', alignItems: 'center', gap: spacing.md },
   flex: { flex: 1 },
-  greeting: { ...t.overline, color: colors.blue },
   name: { fontFamily: fonts.extrabold, fontSize: 26, color: colors.navy, marginTop: 2 },
   net: { fontFamily: fonts.regular, fontSize: 12, color: colors.textFaint, marginTop: spacing.sm, marginBottom: spacing.md },
   statsRow: { flexDirection: 'row', gap: spacing.md, marginBottom: spacing.md },
@@ -133,12 +131,11 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     backgroundColor: colors.card,
     borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
     paddingVertical: spacing.lg,
     paddingHorizontal: spacing.md,
     alignItems: 'center',
     gap: spacing.sm,
+    ...shadow.card,
   },
   quickIcon: {
     width: 44,

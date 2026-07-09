@@ -35,8 +35,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.card,
     borderRadius: radius.lg,
     padding: spacing.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
     minHeight: 108,
     justifyContent: 'center',
     ...shadow.card,
