@@ -59,5 +59,27 @@ describe('classrooms + pack import', () => {
     expect(res.body.resources.length).toBeGreaterThan(0);
     expect(res.body.resources[0].title).toBe('Photosynthesis Notes');
     expect(res.body.resources[0].type).toBe('text');
+    expect(res.body.importedCount).toBe(res.body.resources.length);
+    expect(res.body.skippedCount).toBe(0);
+  });
+
+  it('does not duplicate resources when the same pack is imported again', async () => {
+    const packPath = path.resolve(__dirname, '..', '..', '..', 'sample-packs', 'math-fractions-pack');
+
+    const first = await request(app).post('/resources/import-pack').send({ packPath });
+    expect(first.status).toBe(200);
+    expect(first.body.importedCount).toBe(1);
+    expect(first.body.skippedCount).toBe(0);
+    const firstId = first.body.resources[0].id;
+
+    const second = await request(app).post('/resources/import-pack').send({ packPath });
+    expect(second.status).toBe(200);
+    expect(second.body.importedCount).toBe(0);
+    expect(second.body.skippedCount).toBe(1);
+    expect(second.body.resources[0].id).toBe(firstId);
+
+    const list = await request(app).get('/resources');
+    const matching = list.body.resources.filter((r: { title: string }) => r.title === 'Comparing Fractions Notes');
+    expect(matching.length).toBe(1);
   });
 });

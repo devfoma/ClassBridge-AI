@@ -120,13 +120,16 @@ export const api = {
     return request(hubUrl, `/resources/${id}`);
   },
 
-  importPack(hubUrl: string, packPath: string): Promise<{ resources: ResourcePublic[] }> {
+  importPack(
+    hubUrl: string,
+    packPath: string
+  ): Promise<{ resources: ResourcePublic[]; importedCount: number; skippedCount: number }> {
     return request(hubUrl, '/resources/import-pack', { method: 'POST', body: { packPath } });
   },
 
   // --- Gemma ---
   summarize(hubUrl: string, resourceId: string): Promise<{ summary: string; topics: string[]; level: string }> {
-    return request(hubUrl, '/gemma/summarize', { method: 'POST', body: { resourceId }, timeoutMs: 90000 });
+    return request(hubUrl, '/gemma/summarize', { method: 'POST', body: { resourceId }, timeoutMs: 240000 });
   },
 
   generateQuiz(
@@ -138,7 +141,7 @@ export const api = {
     return request(hubUrl, '/gemma/generate-quiz', {
       method: 'POST',
       body: { resourceId, questionCount, level },
-      timeoutMs: 90000,
+      timeoutMs: 240000,
     });
   },
 
@@ -173,7 +176,7 @@ export const api = {
     recommendedRevision: string;
     nextActivity: string;
   }> {
-    return request(hubUrl, `/insights/classroom/${classroomId}`, { timeoutMs: 90000 });
+    return request(hubUrl, `/insights/classroom/${classroomId}`, { timeoutMs: 240000 });
   },
 
   // --- Sync ---
@@ -193,7 +196,7 @@ export const api = {
     return request(hubUrl, '/sync/push', {
       method: 'POST',
       body: { studentId, deviceId, submissions },
-      timeoutMs: 90000,
+      timeoutMs: 240000,
     });
   },
 };

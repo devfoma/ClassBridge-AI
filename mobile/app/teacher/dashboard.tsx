@@ -79,7 +79,7 @@ export default function TeacherDashboard() {
     >
       <View style={styles.headRow}>
         <View style={styles.flex}>
-          <Text style={styles.name}>Hi {user?.name?.trim() || 'Teacher'} 👋</Text>
+          <Text style={styles.name}>Hi {user?.name?.trim() || 'Teacher'}</Text>
         </View>
         <HubStatusBadge online={online} />
       </View>

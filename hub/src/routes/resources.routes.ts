@@ -37,17 +37,27 @@ resourcesRouter.post('/resources/upload', upload.single('file'), (req, res, next
 const importSchema = z.object({ packPath: z.string().min(1) });
 
 // Import a content pack. Accepts a ZIP upload (field "file") or a JSON body { packPath }.
+// Idempotent: re-importing a pack (or a double-tapped import) reuses previously
+// imported resources instead of creating duplicates (see findResourceBySource).
 resourcesRouter.post('/resources/import-pack', upload.single('file'), (req, res, next) => {
   try {
     if (req.file) {
-      const resources = importPackFromZip(req.file.buffer);
-      res.json({ resources: resources.map((r) => toPublicResource(r, false)) });
+      const result = importPackFromZip(req.file.buffer);
+      res.json({
+        resources: result.resources.map((r) => toPublicResource(r, false)),
+        importedCount: result.importedCount,
+        skippedCount: result.skippedCount,
+      });
       return;
     }
     const parsed = importSchema.safeParse(req.body);
     if (!parsed.success) throw badRequest('Provide a ZIP file or { packPath }', parsed.error.flatten());
-    const resources = importPackFromFolder(parsed.data.packPath);
-    res.json({ resources: resources.map((r) => toPublicResource(r, false)) });
+    const result = importPackFromFolder(parsed.data.packPath);
+    res.json({
+      resources: result.resources.map((r) => toPublicResource(r, false)),
+      importedCount: result.importedCount,
+      skippedCount: result.skippedCount,
+    });
   } catch (err) {
     next(err);
   }

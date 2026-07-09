@@ -22,7 +22,7 @@ export default function Library() {
   const user = useAuthStore((s) => s.user);
   const [resources, setResources] = useState<ResourcePublic[]>([]);
   const [busyId, setBusyId] = useState<string | null>(null);
-  const [importing, setImporting] = useState(false);
+  const [importingPack, setImportingPack] = useState<string | null>(null);
   const [refreshing, setRefreshing] = useState(false);
 
   const load = useCallback(async () => {
@@ -48,14 +48,18 @@ export default function Library() {
       Alert.alert('Set hub URL first', 'Open Settings and enter the hub URL.');
       return;
     }
-    setImporting(true);
+    if (importingPack) return; // Another pack import is already in flight.
+    setImportingPack(packPath);
     try {
-      await api.importPack(user.hubUrl, packPath);
+      const result = await api.importPack(user.hubUrl, packPath);
       await load();
+      if (result.importedCount === 0) {
+        Alert.alert('Already imported', 'This pack is already in your library — no duplicates were added.');
+      }
     } catch (err) {
       Alert.alert('Import failed', (err as Error).message);
     }
-    setImporting(false);
+    setImportingPack(null);
   };
 
   const summarize = async (r: ResourcePublic) => {
@@ -84,7 +88,8 @@ export default function Library() {
           title="Import Photosynthesis Pack"
           icon="download"
           onPress={() => importPack(PHOTOSYNTHESIS_PACK)}
-          loading={importing}
+          loading={importingPack === PHOTOSYNTHESIS_PACK}
+          disabled={importingPack !== null && importingPack !== PHOTOSYNTHESIS_PACK}
           accent={colors.navy}
         />
         <AppButton
@@ -93,6 +98,8 @@ export default function Library() {
           variant="secondary"
           accent={colors.navy}
           onPress={() => importPack(FRACTIONS_PACK)}
+          loading={importingPack === FRACTIONS_PACK}
+          disabled={importingPack !== null && importingPack !== FRACTIONS_PACK}
           style={{ marginTop: spacing.md }}
         />
         <AppButton

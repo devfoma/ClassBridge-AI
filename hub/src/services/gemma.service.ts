@@ -27,6 +27,9 @@ async function callOllama(prompt: string): Promise<string> {
         model: config.gemma.model,
         prompt,
         stream: false,
+        // Keep the model resident for 30 min so subsequent requests skip the
+        // cold-load cost (a big cause of sporadic timeouts on CPU-only setups).
+        keep_alive: '30m',
       }),
       signal: controller.signal,
     });

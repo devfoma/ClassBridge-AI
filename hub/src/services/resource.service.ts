@@ -51,6 +51,7 @@ export function createFileResource(input: {
   buffer: Buffer;
   subject?: string;
   level?: string;
+  metadata?: Record<string, unknown>;
 }): Resource {
   ensureStorage();
   const ext = path.extname(input.originalName) || '.txt';
@@ -70,7 +71,7 @@ export function createFileResource(input: {
     subject: input.subject ?? null,
     level: input.level ?? null,
     summary: null,
-    metadata_json: JSON.stringify({ originalName: input.originalName }),
+    metadata_json: JSON.stringify({ ...(input.metadata || {}), originalName: input.originalName }),
     created_at: nowIso(),
   };
   insertResource(resource);
@@ -110,6 +111,23 @@ export function getResourceOrThrow(id: string): Resource {
 
 export function listResources(): Resource[] {
   return getDb().prepare('SELECT * FROM resources ORDER BY created_at DESC').all() as Resource[];
+}
+
+/**
+ * Find a resource previously imported from the same pack item, so re-importing
+ * a pack (or a double-tapped import button) never creates a duplicate. Matched
+ * on (packId, sourcePath) stashed in metadata_json at import time.
+ */
+export function findResourceBySource(packId: string, sourcePath: string): Resource | undefined {
+  return listResources().find((r) => {
+    if (!r.metadata_json) return false;
+    try {
+      const meta = JSON.parse(r.metadata_json) as { packId?: string; sourcePath?: string };
+      return meta.packId === packId && meta.sourcePath === sourcePath;
+    } catch {
+      return false;
+    }
+  });
 }
 
 export function updateResourceSummary(id: string, summary: string, metadata?: Record<string, unknown>): void {

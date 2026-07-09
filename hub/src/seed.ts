@@ -23,8 +23,10 @@ function seed() {
 
   const packPath = path.resolve(__dirname, '..', '..', 'sample-packs', 'photosynthesis-pack');
   try {
-    const resources = importPackFromFolder(packPath);
-    console.log(`Imported ${resources.length} resource(s) from Photosynthesis pack:`);
+    const { resources, importedCount, skippedCount } = importPackFromFolder(packPath);
+    console.log(
+      `Photosynthesis pack: ${importedCount} resource(s) imported, ${skippedCount} already present.`
+    );
     for (const r of resources) console.log(`  - ${r.title} (${r.id})`);
   } catch (err) {
     console.warn(`Could not import sample pack from ${packPath}: ${(err as Error).message}`);
