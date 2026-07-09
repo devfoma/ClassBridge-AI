@@ -19,5 +19,9 @@
     "test:hub": "npm run test --prefix hub",
     "typecheck": "npm run typecheck --prefix hub && npm run typecheck --prefix mobile"
   },
+  "overrides": {
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
+  },
   "license": "MIT"
 }

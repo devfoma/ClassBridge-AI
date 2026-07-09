@@ -11,14 +11,15 @@
       "resizeMode": "contain",
       "backgroundColor": "#0B2A5B"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.classbridge.ai"
     },
     "android": {
-      "package": "com.classbridge.ai",
-      "usesCleartextTraffic": true
+      "package": "com.classbridge.ai"
     },
     "web": {
       "bundler": "metro"
@@ -29,6 +30,14 @@
         "expo-camera",
         {
           "cameraPermission": "ClassBridge uses the camera only to scan a class join code."
+        }
+      ],
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
         }
       ]
     ],
